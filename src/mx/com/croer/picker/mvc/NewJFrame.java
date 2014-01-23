@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,8 +29,6 @@ public class NewJFrame extends javax.swing.JFrame {
         initComponents();
         String path = "C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Buscq";
 
-        String property = System.getProperty("user.home");
-        System.out.println("propertu " + property);
         List<String> readLines = FileUtils.readLines(new File(path));
         for (String string : readLines) {
             System.out.println("string " + string);

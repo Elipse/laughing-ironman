@@ -59,16 +59,22 @@ public class PickerView implements BrowseListener {
             if (popup.isShowing()) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER: {
+                        //                    setEntityWithoutNotification();
                         e.consume();
-//                    setEntityWithoutNotification();
                         break;
                     }
-                    case KeyEvent.VK_PAGE_DOWN: {
-                        this.controller.backward();
+                    case KeyEvent.VK_ESCAPE: {
+                        popup.setVisible(false);
                         break;
                     }
                     case KeyEvent.VK_PAGE_UP: {
+                        this.controller.backward();
+                        e.consume();
+                        break;
+                    }
+                    case KeyEvent.VK_PAGE_DOWN: {
                         this.controller.forward();
+                        e.consume();
                         break;
                     }
                     case KeyEvent.VK_UP: {
@@ -80,42 +86,48 @@ public class PickerView implements BrowseListener {
 //                    changeListSelectedIndex(1);
                         break;
                     }
-                    default:
-                        throw new AssertionError();
+                }
+            } else {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_ENTER:
+                        e.consume();
+                    case KeyEvent.VK_PAGE_UP:
+                    case KeyEvent.VK_PAGE_DOWN:
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_DOWN:
+                        popup.setVisible(true);
+                        popup.show(this.textComponent, 1, this.textComponent.getHeight());
+                        break;
                 }
             }
         } else {
-        }
-        if (popup.isShowing()) {
-            switch (e.getKeyCode()) {
-
-                default:
-//                    popup.setVisible(false);
-                    break;
-            }
-        } else {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_DOWN:
-                case KeyEvent.VK_UP:
-                case KeyEvent.VK_PAGE_UP:
-                case KeyEvent.VK_PAGE_DOWN:
-                    this.controller.fetch(this.textComponent.getText());
-                    popup.setVisible(true);
-                    popup.show(this.textComponent, 1, this.textComponent.getHeight());
-                    break;
-                case KeyEvent.VK_F4:
-//                    dataPicker.nextMode();
-//                    configTable();
-                    break;
-                default:
-                    popup.setVisible(true);
-                    popup.show(this.textComponent, 1, this.textComponent.getHeight());
+            if (popup.isShowing()) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_ESCAPE:
+                        this.controller.cancel();
+                        popup.setVisible(false);
+                        break; 
+                }
+            } else {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_ENTER:
+                    case KeyEvent.VK_PAGE_UP:
+                    case KeyEvent.VK_PAGE_DOWN:
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_DOWN:
+                        this.controller.fetch(this.textComponent.getText()); //si se canceló empieza desde el inicio
+                        popup.setVisible(true);
+                        popup.show(this.textComponent, 1, this.textComponent.getHeight());
+                        break;
+                }
             }
         }
     }
 
     private void documentChangeInTextComponent(DocumentEvent e) {
         this.controller.fetch(this.textComponent.getText());
+        popup.setVisible(true);
+        popup.show(this.textComponent, 1, this.textComponent.getHeight());
     }
 
     private void focusLostInTextComponent(FocusEvent e) {
@@ -130,8 +142,6 @@ public class PickerView implements BrowseListener {
                 break;
             case "DOWN":
                 this.controller.forward();
-                break;
-            default:
                 break;
         }
     }
