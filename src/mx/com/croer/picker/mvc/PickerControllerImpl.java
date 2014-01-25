@@ -48,21 +48,27 @@ public final class PickerControllerImpl implements PickerController {
     @Override
     public void fetch(Object input) {
         model.fetch(input);
+        view.displayView(true);
+        view.startProgess();
     }
 
     @Override
     public void forward() {
         model.forward();
+        view.startProgess();
     }
 
     @Override
     public void backward() {
         model.backward();
+        view.startProgess();
     }
 
     @Override
     public void cancel() {
         model.cancel();
+        view.displayView(false);
+        view.stopProgress();
     }
 
 }

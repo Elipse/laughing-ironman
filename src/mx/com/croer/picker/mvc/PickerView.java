@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -106,7 +107,7 @@ public class PickerView implements BrowseListener {
                     case KeyEvent.VK_ESCAPE:
                         this.controller.cancel();
                         popup.setVisible(false);
-                        break; 
+                        break;
                 }
             } else {
                 switch (e.getKeyCode()) {
@@ -126,22 +127,24 @@ public class PickerView implements BrowseListener {
 
     private void documentChangeInTextComponent(DocumentEvent e) {
         this.controller.fetch(this.textComponent.getText());
-        popup.setVisible(true);
-        popup.show(this.textComponent, 1, this.textComponent.getHeight());
     }
 
     private void focusLostInTextComponent(FocusEvent e) {
         this.controller.cancel();
-        popup.setVisible(false);
     }
 
     private void browseByClick(PropertyChangeEvent evt) {
+        System.out.println("evt " + evt.getPropertyName());
         switch (evt.getPropertyName()) {
             case "UP":
                 this.controller.backward();
                 break;
             case "DOWN":
+                System.out.println("In case Down");
                 this.controller.forward();
+//                this.panel.getProgressBar().setIndeterminate(false);
+//                this.panel.getProgressBar().setValue(30);
+//                this.panel.getProgressBar().setStringPainted(true);
                 break;
         }
     }
@@ -152,9 +155,30 @@ public class PickerView implements BrowseListener {
         switch (e.getType()) {
             case BrowseEvent.PAGE:
                 break;
+            case BrowseEvent.PROGRESS:
+                int i = (int) e.getArgument();
+                break;
             default:
                 throw new AssertionError();
         }
+    }
+
+    public void displayView(boolean flag) {
+        if (flag) {
+            popup.setVisible(true);
+            popup.show(this.textComponent, 1, this.textComponent.getHeight());
+        } else {
+            popup.setVisible(false);
+        }
+    }
+
+    public void startProgess() {
+        JProgressBar lpb = this.panel.getProgressBar();
+        lpb.setIndeterminate(true);
+    }
+
+    public void stopProgress() {
+        this.panel.getProgressBar().setIndeterminate(false);
     }
 
     private class MultipleListener implements KeyListener, DocumentListener, FocusListener, PropertyChangeListener {
