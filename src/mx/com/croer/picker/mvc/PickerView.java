@@ -5,13 +5,14 @@
  */
 package mx.com.croer.picker.mvc;
 
-import mx.com.croer.picker.model.PickerModel;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.Map.Entry;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.event.DocumentEvent;
@@ -30,6 +31,8 @@ public class PickerView implements BrowseListener {
     private PickerModel model;
     private JPopupMenu popup;
     private boolean done = true;
+    private List list;
+    private int count;
 
     public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model) {
         this.textComponent = textComponent;
@@ -65,7 +68,7 @@ public class PickerView implements BrowseListener {
                         break;
                     }
                     case KeyEvent.VK_ESCAPE: {
-                        popup.setVisible(false);
+                        displayPopup(false);
                         break;
                     }
                     case KeyEvent.VK_PAGE_UP: {
@@ -96,8 +99,7 @@ public class PickerView implements BrowseListener {
                     case KeyEvent.VK_PAGE_DOWN:
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_DOWN:
-                        popup.setVisible(true);
-                        popup.show(this.textComponent, 1, this.textComponent.getHeight());
+                        displayPopup(true);
                         break;
                 }
             }
@@ -106,7 +108,6 @@ public class PickerView implements BrowseListener {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ESCAPE:
                         this.controller.cancel();
-                        popup.setVisible(false);
                         break;
                 }
             } else {
@@ -117,8 +118,6 @@ public class PickerView implements BrowseListener {
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_DOWN:
                         this.controller.fetch(this.textComponent.getText()); //si se canceló empieza desde el inicio
-                        popup.setVisible(true);
-                        popup.show(this.textComponent, 1, this.textComponent.getHeight());
                         break;
                 }
             }
@@ -140,30 +139,24 @@ public class PickerView implements BrowseListener {
                 this.controller.backward();
                 break;
             case "DOWN":
-                System.out.println("In case Down");
                 this.controller.forward();
-//                this.panel.getProgressBar().setIndeterminate(false);
-//                this.panel.getProgressBar().setValue(30);
-//                this.panel.getProgressBar().setStringPainted(true);
                 break;
         }
     }
 
     @Override
     public void update(BrowseEvent e) {
-        System.out.println("e " + e.getType());
-        switch (e.getType()) {
-            case BrowseEvent.PAGE:
-                break;
-            case BrowseEvent.PROGRESS:
-                int i = (int) e.getArgument();
-                break;
-            default:
-                throw new AssertionError();
+
+        if (e.getPosition() == null) {
+            list = e.getBeanList();
+            count = 0;
+        } else {
+            int position = e.getPosition();
+            setProgress(++count % list.size());
         }
     }
 
-    public void displayView(boolean flag) {
+    public void displayPopup(boolean flag) {
         if (flag) {
             popup.setVisible(true);
             popup.show(this.textComponent, 1, this.textComponent.getHeight());
@@ -175,6 +168,11 @@ public class PickerView implements BrowseListener {
     public void startProgess() {
         JProgressBar lpb = this.panel.getProgressBar();
         lpb.setIndeterminate(true);
+    }
+
+    public void setProgress(int progress) {
+        JProgressBar lpb = this.panel.getProgressBar();
+        lpb.setValue(progress);
     }
 
     public void stopProgress() {
@@ -224,5 +222,4 @@ public class PickerView implements BrowseListener {
             PickerView.this.browseByClick(evt);
         }
     }
-
 }

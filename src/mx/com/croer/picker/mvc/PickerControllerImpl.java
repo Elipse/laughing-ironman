@@ -5,10 +5,7 @@
  */
 package mx.com.croer.picker.mvc;
 
-import mx.com.croer.picker.model.PickerModel;
-import mx.com.croer.picker.model.PickerModelImpl;
 import javax.swing.text.JTextComponent;
-import mx.com.croer.picker.model.DataPicker;
 
 public final class PickerControllerImpl implements PickerController {
 
@@ -48,7 +45,7 @@ public final class PickerControllerImpl implements PickerController {
     @Override
     public void fetch(Object input) {
         model.fetch(input);
-        view.displayView(true);
+        view.displayPopup(true);
         view.startProgess();
     }
 
@@ -67,8 +64,7 @@ public final class PickerControllerImpl implements PickerController {
     @Override
     public void cancel() {
         model.cancel();
-        view.displayView(false);
+        view.displayPopup(false);
         view.stopProgress();
     }
-
 }

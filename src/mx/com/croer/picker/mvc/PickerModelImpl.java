@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.com.croer.picker.model;
+package mx.com.croer.picker.mvc;
 
 import java.beans.*;
 import java.util.AbstractMap.SimpleEntry;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.SwingWorker;
 import mx.com.croer.picker.mvc.BrowseEvent;
 //import org.openide.util.Exceptions;
@@ -51,9 +52,24 @@ public class PickerModelImpl extends PickerModel {
 
     @Override
     public void fetch(Object input) {
+
+        List list = new ArrayList();
+        List propList = new ArrayList();
+        
+        Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
+
+        list.add(new Producto("leche", image));
+        list.add(new Producto("mango", image));
+        list.add(new Producto("platanos", image));
+        
+        
+        
+        fireSearchPerformed(new BrowseEvent(this, list, list, null));
+
         if (true) {
-            return ;
+            return;
         }
+
         pageSize = dataPicker.getPageSize();
         pageNumber = 1;
         listPageHeader = new ArrayList();
@@ -139,9 +155,9 @@ public class PickerModelImpl extends PickerModel {
         String propertyName = evt.getPropertyName();
 
         /* From MVC PATTERN XEAM */
-         BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new ArrayList(), BrowseEvent.PAGE);
-         fireSearchPerformed(e);         
-        
+        BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new ArrayList(), null, BrowseEvent.PAGE);
+        fireSearchPerformed(e);
+
         if (propertyName.equals("resultList")) {
             resultList = (List) evt.getNewValue();
             setForward(resultList.size() > pageSize ? true : false);
