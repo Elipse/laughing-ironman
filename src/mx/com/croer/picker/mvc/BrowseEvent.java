@@ -20,21 +20,19 @@ public class BrowseEvent {
 
     private final PickerModel model;
     private final List beanList;
-    private final List<String> propList;
     private final Integer position;
 
     /**
      *
      * @param model
      * @param beanList A list of Beans
-     * @param propList A list of entries made up of String, String
+     * @param propList A list of entries made up of String, String  (DEBE ESTAR EN VISTA NO EN MODEL)
      * @param position null means all of the list must be displayed, not null
      * means just an instance should be refreshed
      */
-    public BrowseEvent(PickerModel model, List beanList, List propList, Integer position) {
+    public BrowseEvent(PickerModel model, List beanList, Integer position) {
         this.model = model;
         this.beanList = beanList;
-        this.propList = propList;
         this.position = position;
     }
 
@@ -50,13 +48,6 @@ public class BrowseEvent {
      */
     public List getBeanList() {
         return beanList;
-    }
-
-     /**
-     * @return the propList
-     */
-    public List getPropList() {
-        return propList;
     }
 
     /**

@@ -14,25 +14,27 @@ import javax.swing.Icon;
 public class Producto {
 
     private String descripcion;
-    private Icon image;
+    private Icon imagen;
+    private String marca;
 
-    public Producto(String descripcion, Icon image) {
+    public Producto(String descripcion, Icon image, String marca) {
         this.descripcion = descripcion;
-        this.image = image;
+        this.imagen = image;
+        this.marca = marca;
     }
 
     /**
-     * @return the image
+     * @return the imagen
      */
     public Icon getImage() {
-        return image;
+        return imagen;
     }
 
     /**
-     * @param image the image to set
+     * @param image the imagen to set
      */
     public void setImage(Icon image) {
-        this.image = image;
+        this.imagen = image;
     }
 
     /**
@@ -47,6 +49,20 @@ public class Producto {
      */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    /**
+     * @return the marca
+     */
+    public String getMarca() {
+        return marca;
+    }
+
+    /**
+     * @param marca the marca to set
+     */
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
 }

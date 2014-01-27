@@ -11,13 +11,25 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.ELProperty;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.swingbinding.JTableBinding;
+import org.jdesktop.swingbinding.JTableBinding.ColumnBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 
 /**
  *
@@ -33,12 +45,16 @@ public class PickerView implements BrowseListener {
     private boolean done = true;
     private List list;
     private int count;
+    private final BindingGroup bindingGroup;
+    private JTableBinding jTableBinding;
+    private List<BeanColumn> net;
 
-    public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model) {
+    public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> net) {
         this.textComponent = textComponent;
-        this.panel = createPanel();
         this.controller = controller;
         this.model = model;
+        this.net = net;
+        this.panel = createPanel();
 
         this.model.addBrowseListener(PickerView.this);
 
@@ -51,6 +67,29 @@ public class PickerView implements BrowseListener {
         popup = new JPopupMenu();
         popup.setFocusable(false);
         popup.add(panel);
+
+        bindingGroup = new BindingGroup();
+        list = ObservableCollections.observableList(new ArrayList());
+        JTable tabla = this.panel.getTable();
+        tabla.setModel(new AbstractTableModel() {
+
+            @Override
+            public int getRowCount() {
+                return 0;
+            }
+
+            @Override
+            public int getColumnCount() {
+                return net.size();
+            }
+
+            @Override
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                return null;
+            }
+        });
+        jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, this.panel.getTable());
+        bindingGroup.addBinding(jTableBinding);
     }
 
     private PickerViewPanel createPanel() {
@@ -148,7 +187,9 @@ public class PickerView implements BrowseListener {
     public void update(BrowseEvent e) {
 
         if (e.getPosition() == null) {
-            list = e.getBeanList();
+            configTable();
+            System.out.println("MEXICO3211");
+            list.addAll(e.getBeanList());
             count = 0;
         } else {
             int position = e.getPosition();
@@ -177,6 +218,42 @@ public class PickerView implements BrowseListener {
 
     public void stopProgress() {
         this.panel.getProgressBar().setIndeterminate(false);
+    }
+
+    private void configTable() {
+
+        JTable jTable = this.panel.getTable();
+
+        bindingGroup.removeBinding(jTableBinding);
+
+        list = ObservableCollections.observableList(new ArrayList());
+        jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, jTable);
+
+        for (BeanColumn beanColumn : net) {
+            ColumnBinding columnBinding = jTableBinding.addColumnBinding(ELProperty.create("${" + beanColumn.getProperty() + "}"));
+            columnBinding.setColumnName(beanColumn.getColName());
+            columnBinding.setColumnClass(beanColumn.getClase());
+        }
+
+        bindingGroup.addBinding(jTableBinding);
+        bindingGroup.bind();
+
+        int tableWidth = 0;
+
+        //TO DO esta mal remover la columna aqui se defasa net versus Column Model
+        for (int i = 0; i < net.size(); i++) {
+            BeanColumn beanColumn = net.get(i);
+            TableColumn column = jTable.getColumnModel().getColumn(i);
+            if (beanColumn.isVisible()) {
+                column.setCellRenderer(beanColumn.getRenderer());
+                column.setPreferredWidth(beanColumn.getWidth());
+                tableWidth += beanColumn.getWidth();
+            } else {
+                jTable.getColumnModel().removeColumn(column);
+            }
+        }
+
+        jTable.setRowHeight(64);
     }
 
     private class MultipleListener implements KeyListener, DocumentListener, FocusListener, PropertyChangeListener {

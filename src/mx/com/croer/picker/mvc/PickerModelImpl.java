@@ -54,17 +54,18 @@ public class PickerModelImpl extends PickerModel {
     public void fetch(Object input) {
 
         List list = new ArrayList();
+        
         List propList = new ArrayList();
         
         Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
 
-        list.add(new Producto("leche", image));
-        list.add(new Producto("mango", image));
-        list.add(new Producto("platanos", image));
+        System.out.println("imagNe " + image.getIconHeight());
         
-        
-        
-        fireSearchPerformed(new BrowseEvent(this, list, list, null));
+        list.add(new Producto("leche", image,"lala"));
+        list.add(new Producto("mango", image,"frut&veg"));
+        list.add(new Producto("platanos", image,"frut&veg"));
+               
+        fireSearchPerformed(new BrowseEvent(this, list, null));
 
         if (true) {
             return;
@@ -155,7 +156,7 @@ public class PickerModelImpl extends PickerModel {
         String propertyName = evt.getPropertyName();
 
         /* From MVC PATTERN XEAM */
-        BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new ArrayList(), null, BrowseEvent.PAGE);
+        BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new ArrayList(), null);
         fireSearchPerformed(e);
 
         if (propertyName.equals("resultList")) {
