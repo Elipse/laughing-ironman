@@ -30,6 +30,7 @@ public class PickerViewPanel extends javax.swing.JPanel {
         MouseListener ml = new MouseListener();
         jTable1.addMouseListener(ml);
         jTable1.addMouseMotionListener(ml);
+        jTable1.convertRowIndexToModel(1);
     }
 
     /**

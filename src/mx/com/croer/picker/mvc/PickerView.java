@@ -102,7 +102,11 @@ public class PickerView implements BrowseListener {
             if (popup.isShowing()) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER: {
-                        //                    setEntityWithoutNotification();
+                        //setEntityWithoutNotification();
+                        
+                        //Enviar los índices de el Modelo subyacente
+                        List selectionList = new ArrayList();
+                        this.controller.makeSelection(selectionList);
                         e.consume();
                         break;
                     }
@@ -237,7 +241,11 @@ public class PickerView implements BrowseListener {
 
         bindingGroup.addBinding(jTableBinding);
         bindingGroup.bind();
+        
+        javax.swing.DefaultListSelectionModel d;
 
+        System.out.println("jTable.getModel() " + jTable.getSelectionModel());        
+        
         int tableWidth = 0;
 
         //TO DO esta mal remover la columna aqui se defasa net versus Column Model

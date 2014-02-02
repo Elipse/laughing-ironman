@@ -7,6 +7,7 @@ package mx.com.croer.picker.mvc;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 import javax.swing.event.EventListenerList;
 import mx.com.croer.picker.mvc.BrowseEvent;
 import mx.com.croer.picker.mvc.BrowseListener;
@@ -57,4 +58,9 @@ public abstract class PickerModel {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertySupport.removePropertyChangeListener(listener);
     }
+
+    List makeSelection(List selectionList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

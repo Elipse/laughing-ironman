@@ -5,17 +5,21 @@
  */
 package mx.com.croer.picker.mvc;
 
+import java.util.List;
+
 /**
  *
  * @author elialva
  */
-public interface PickerController {
+public interface PickerController<E> {
 
     public void fetch(Object input);
 
     public void forward();
 
     public void backward();
+
+    public void makeSelection(List<E> selectionList);
 
     public void cancel();
 

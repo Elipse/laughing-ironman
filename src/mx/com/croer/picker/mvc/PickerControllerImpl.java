@@ -78,4 +78,12 @@ public final class PickerControllerImpl implements PickerController {
         view.displayPopup(false);
         view.stopProgress();
     }
+
+    @Override
+    public void makeSelection(List selectionList) {
+        List makeSelection = this.model.makeSelection(selectionList);
+        //Solicitar a DataPicker los Producto's a partir de ProductoBusq
+        //Error si está vacio, error si no corresponde a la clase ProductoBusq q emite DataPicker
+        //Post makeSelection
+    }
 }

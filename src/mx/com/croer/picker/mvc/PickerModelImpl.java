@@ -12,7 +12,6 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingWorker;
-import mx.com.croer.picker.mvc.BrowseEvent;
 //import org.openide.util.Exceptions;
 
 /**
@@ -183,6 +182,12 @@ public class PickerModelImpl extends PickerModel {
         if (propertyName.equals("progress") || propertyName.equals("count")) {
             propertySupport.firePropertyChange(evt);
         }
+    }
+
+    @Override
+    public List makeSelection(List selectionList) {
+        //Ej. selectionList representa ProductoBusqueda el retorno representa Producto
+        return null;
     }
 
     private class BeanWorker extends SwingWorker<List, Void> {
