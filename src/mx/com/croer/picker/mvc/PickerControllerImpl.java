@@ -80,10 +80,8 @@ public final class PickerControllerImpl implements PickerController {
     }
 
     @Override
-    public void makeSelection(List selectionList) {
-        List makeSelection = this.model.makeSelection(selectionList);
-        //Solicitar a DataPicker los Producto's a partir de ProductoBusq
-        //Error si está vacio, error si no corresponde a la clase ProductoBusq q emite DataPicker
+    public void makeSelection(int[] indexes) {
+        List makeSelection = this.model.makeSelection(indexes);
         //Post makeSelection
     }
 }

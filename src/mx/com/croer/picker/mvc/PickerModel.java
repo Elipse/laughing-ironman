@@ -59,7 +59,7 @@ public abstract class PickerModel {
         propertySupport.removePropertyChangeListener(listener);
     }
 
-    List makeSelection(List selectionList) {
+    List makeSelection(int[] indexes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

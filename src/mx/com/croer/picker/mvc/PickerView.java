@@ -105,8 +105,8 @@ public class PickerView implements BrowseListener {
                         //setEntityWithoutNotification();
                         
                         //Enviar los índices de el Modelo subyacente
-                        List selectionList = new ArrayList();
-                        this.controller.makeSelection(selectionList);
+                        int[] indexes = new int[5];
+                        this.controller.makeSelection(indexes);
                         e.consume();
                         break;
                     }

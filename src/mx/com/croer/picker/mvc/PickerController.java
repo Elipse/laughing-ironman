@@ -19,7 +19,7 @@ public interface PickerController<E> {
 
     public void backward();
 
-    public void makeSelection(List<E> selectionList);
+    public void makeSelection(int[] indexes);
 
     public void cancel();
 

@@ -185,7 +185,7 @@ public class PickerModelImpl extends PickerModel {
     }
 
     @Override
-    public List makeSelection(List selectionList) {
+    public List makeSelection(int[] indexes) {
         //Ej. selectionList representa ProductoBusqueda el retorno representa Producto
         return null;
     }
