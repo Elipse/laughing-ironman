@@ -105,8 +105,7 @@ public class PickerView implements BrowseListener {
                         //setEntityWithoutNotification();
                         
                         //Enviar los índices de el Modelo subyacente
-                        int[] indexes = new int[5];
-                        this.controller.makeSelection(indexes);
+                        this.controller.makeSelection(list);
                         e.consume();
                         break;
                     }
@@ -176,7 +175,7 @@ public class PickerView implements BrowseListener {
     }
 
     private void browseByClick(PropertyChangeEvent evt) {
-        System.out.println("evt " + evt.getPropertyName());
+//        System.out.println("evt " + evt.getPropertyName());
         switch (evt.getPropertyName()) {
             case "UP":
                 this.controller.backward();
@@ -184,6 +183,10 @@ public class PickerView implements BrowseListener {
             case "DOWN":
                 this.controller.forward();
                 break;
+            case "MOUSEMOVED":
+                panel.getTable().getSelectionModel().setSelectionInterval((Integer)evt.getNewValue(), (Integer)evt.getNewValue());
+            case "MOUSERELEASED":
+//                break;
         }
     }
 
@@ -211,17 +214,17 @@ public class PickerView implements BrowseListener {
     }
 
     public void startProgess() {
-        JProgressBar lpb = this.panel.getProgressBar();
-        lpb.setIndeterminate(true);
+//        JProgressBar lpb = this.panel.getProgressBar();
+//        lpb.setIndeterminate(true);
     }
 
     public void setProgress(int progress) {
-        JProgressBar lpb = this.panel.getProgressBar();
-        lpb.setValue(progress);
+//        JProgressBar lpb = this.panel.getProgressBar();
+//        lpb.setValue(progress);
     }
 
     public void stopProgress() {
-        this.panel.getProgressBar().setIndeterminate(false);
+//        this.panel.getProgressBar().setIndeterminate(false);
     }
 
     private void configTable() {

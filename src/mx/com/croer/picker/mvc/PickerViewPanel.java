@@ -9,12 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -30,7 +26,6 @@ public class PickerViewPanel extends javax.swing.JPanel {
         MouseListener ml = new MouseListener();
         jTable1.addMouseListener(ml);
         jTable1.addMouseMotionListener(ml);
-        jTable1.convertRowIndexToModel(1);
     }
 
     /**
@@ -64,18 +59,8 @@ public class PickerViewPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setText("U");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         jButton2.setText("D");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
 
         jLabel1.setText("No hay registros");
 
@@ -125,20 +110,6 @@ public class PickerViewPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        firePropertyChange("UP", "", ".");
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        firePropertyChange("DOWN", "", ".");
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    public int[] getSelection() {
-        DefaultTableModel d;
-        return jTable1.getSelectedRows();
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -153,27 +124,35 @@ public class PickerViewPanel extends javax.swing.JPanel {
     public JTable getTable() {
         return jTable1;
     }
-    
-    public JProgressBar getProgressBar() {
-        return jProgressBar1;
-    }
 
-    private class MouseListener extends MouseAdapter {
+    private class MouseListener extends MouseAdapter implements ActionListener {
 
         @Override
         public void mouseMoved(MouseEvent e) {
             int index = jTable1.rowAtPoint(e.getPoint());
 
-            if (index >= 0 && jTable1.getSelectedRow() != index) {
-                jTable1.getSelectionModel().setSelectionInterval(index, index);
+            if (index >= 0) {
+                firePropertyChange("MOUSEMOVED", -1, index);
             }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            int index = jTable1.rowAtPoint(e.getPoint());
+
             if (SwingUtilities.isLeftMouseButton(e)) {
-//            setEntityWithoutNotification();
+                firePropertyChange("MOUSERELEASED", -1, index);
             }
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource()==jButton1) {
+                firePropertyChange("UP", "", ".");
+            } else {
+                firePropertyChange("DOWN", "", ".");
+            }
+             
         }
     }
 }

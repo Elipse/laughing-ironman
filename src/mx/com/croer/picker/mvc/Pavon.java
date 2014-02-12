@@ -3,25 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package mx.com.croer.picker.mvc;
 
-import java.util.List;
+import javax.swing.text.JTextComponent;
 
 /**
  *
  * @author elialva
- * @param <E>
  */
-public interface PickerController<E> {
+public class Pavon {
+    
+    public static void bind(JTextComponent j) {
+        PavonImp pavon = new PavonImp();
+        pavon.bindImp(j);
+    }    
 
-    public void fetch(Object input);
-
-    public void forward();
-
-    public void backward();
-
-    public void makeSelection(List objects);
-
-    public void cancel();
-
+    
 }

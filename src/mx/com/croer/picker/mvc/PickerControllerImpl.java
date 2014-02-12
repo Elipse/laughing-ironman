@@ -80,8 +80,7 @@ public final class PickerControllerImpl implements PickerController {
     }
 
     @Override
-    public void makeSelection(int[] indexes) {
-        List makeSelection = this.model.makeSelection(indexes);
-        //Post makeSelection
+    public void makeSelection(List objects) {
+        //Post objects
     }
 }
