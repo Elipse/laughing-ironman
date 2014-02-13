@@ -5,22 +5,26 @@
  */
 package mx.com.croer.picker.mvc;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
@@ -39,6 +43,7 @@ public class PickerView implements BrowseListener {
 
     private JTextComponent textComponent;
     private PickerViewPanel panel;
+    private JTable table;
     private PickerController controller;
     private PickerModel model;
     private JPopupMenu popup;
@@ -48,6 +53,7 @@ public class PickerView implements BrowseListener {
     private final BindingGroup bindingGroup;
     private JTableBinding jTableBinding;
     private List<BeanColumn> net;
+    private int position;
 
     public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> net) {
         this.textComponent = textComponent;
@@ -70,8 +76,9 @@ public class PickerView implements BrowseListener {
 
         bindingGroup = new BindingGroup();
         list = ObservableCollections.observableList(new ArrayList());
-        JTable tabla = this.panel.getTable();
-        tabla.setModel(new AbstractTableModel() {
+        table = this.panel.getTable();
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        table.setModel(new AbstractTableModel() {
 
             @Override
             public int getRowCount() {
@@ -88,6 +95,12 @@ public class PickerView implements BrowseListener {
                 return null;
             }
         });
+        TableColumn column = table.getColumnModel().getColumn(0);
+        ArrayList<Integer> selected = new ArrayList<Integer>();
+        
+        column.setCellRenderer(new TableCellRendererX(selected));
+
+        selected.add(1);
         jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, this.panel.getTable());
         bindingGroup.addBinding(jTableBinding);
     }
@@ -103,7 +116,6 @@ public class PickerView implements BrowseListener {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER: {
                         //setEntityWithoutNotification();
-                        
                         //Enviar los índices de el Modelo subyacente
                         this.controller.makeSelection(list);
                         e.consume();
@@ -124,14 +136,22 @@ public class PickerView implements BrowseListener {
                         break;
                     }
                     case KeyEvent.VK_UP: {
-//                    changeListSelectedIndex(-1);
+                        changeListSelectedIndex(-1);
                         break;
                     }
 
                     case KeyEvent.VK_DOWN: {
-//                    changeListSelectedIndex(1);
+                        changeListSelectedIndex(+1);
                         break;
                     }
+                    case KeyEvent.VK_CONTROL:
+                        System.out.println("EligiendoCon");
+//                        boolean isSelected = table.isCellSelected(1, 1);
+//                        DefaultTableCellRenderer defRender = (DefaultTableCellRenderer) table.getCellRenderer(1, 1);
+//                        Component cellRenderer = defRender.getTableCellRendererComponent(table,
+//                                "Huml", isSelected, false, 1, 1);
+//                        cellRenderer.setBackground(Color.MAGENTA);
+
                 }
             } else {
                 switch (e.getKeyCode()) {
@@ -175,7 +195,7 @@ public class PickerView implements BrowseListener {
     }
 
     private void browseByClick(PropertyChangeEvent evt) {
-//        System.out.println("evt " + evt.getPropertyName());
+
         switch (evt.getPropertyName()) {
             case "UP":
                 this.controller.backward();
@@ -184,47 +204,43 @@ public class PickerView implements BrowseListener {
                 this.controller.forward();
                 break;
             case "MOUSEMOVED":
-                panel.getTable().getSelectionModel().setSelectionInterval((Integer)evt.getNewValue(), (Integer)evt.getNewValue());
+//                panel.getTable().getSelectionModel().setSelectionInterval((Integer) evt.getNewValue(), (Integer) evt.getNewValue());
+                break;
             case "MOUSERELEASED":
-//                break;
+//                table.addRowSelectionInterval((Integer) evt.getNewValue(), (Integer) evt.getNewValue());
+                break;
         }
     }
 
     @Override
     public void update(BrowseEvent e) {
+        String key = e.getProperty().getKey();
+        Object value = e.getProperty().getValue();
 
-        if (e.getPosition() == null) {
-            configTable();
-            System.out.println("MEXICO3211");
-            list.addAll(e.getBeanList());
-            count = 0;
-        } else {
-            int position = e.getPosition();
-            setProgress(++count % list.size());
+        switch (key) {
+            case "list":
+                configTable();
+                list.addAll((Collection) value);
+                count = 0;
+                panel.setProgress(count);
+                panel.setMessage("Listando...");
+                break;
+            case "image":
+                int position = (int) value;
+                panel.setProgress(++count % list.size());
+                if (count == list.size()) {
+                    panel.setMessage("Registros encontrados");
+                }
+                break;
+            case "backward":
+                panel.setEnableBackward((boolean) value);
+                break;
+            case "forward":
+                panel.setEnableForward((boolean) value);
+                break;
+            default:
+                throw new AssertionError();
         }
-    }
-
-    public void displayPopup(boolean flag) {
-        if (flag) {
-            popup.setVisible(true);
-            popup.show(this.textComponent, 1, this.textComponent.getHeight());
-        } else {
-            popup.setVisible(false);
-        }
-    }
-
-    public void startProgess() {
-//        JProgressBar lpb = this.panel.getProgressBar();
-//        lpb.setIndeterminate(true);
-    }
-
-    public void setProgress(int progress) {
-//        JProgressBar lpb = this.panel.getProgressBar();
-//        lpb.setValue(progress);
-    }
-
-    public void stopProgress() {
-//        this.panel.getProgressBar().setIndeterminate(false);
     }
 
     private void configTable() {
@@ -244,11 +260,11 @@ public class PickerView implements BrowseListener {
 
         bindingGroup.addBinding(jTableBinding);
         bindingGroup.bind();
-        
+
         javax.swing.DefaultListSelectionModel d;
 
-        System.out.println("jTable.getModel() " + jTable.getSelectionModel());        
-        
+        System.out.println("jTable.getModel() " + jTable.getSelectionModel());
+
         int tableWidth = 0;
 
         //TO DO esta mal remover la columna aqui se defasa net versus Column Model
@@ -267,19 +283,63 @@ public class PickerView implements BrowseListener {
         jTable.setRowHeight(64);
     }
 
-    private class MultipleListener implements KeyListener, DocumentListener, FocusListener, PropertyChangeListener {
+    public void startProgess() {
+        this.position = -1;
+        panel.setProgress(true);
+        panel.setMessage("Buscando...");
+    }
+
+    public void stopProgress() {
+    }
+
+    public void displayPopup(boolean flag) {
+        if (flag) {
+            popup.setVisible(true);
+            popup.show(this.textComponent, 1, this.textComponent.getHeight());
+        } else {
+            popup.setVisible(false);
+        }
+    }
+
+    private void changeListSelectedIndex(int i) {
+        this.position += i;
+        int rows = table.getRowCount();
+
+        if (position < 0) {
+            position = rows - 1;
+        }
+
+        if (position >= rows) {
+            position = 0;
+        }
+
+        this.table.setRowSelectionInterval(position, position);
+//        table.clearSelection();
+    }
+
+    private static class TableCellRendererX extends DefaultTableCellRenderer {
+
+        private List<Integer> selected;
+
+        public TableCellRendererX(List<Integer> selected) {
+            this.selected = selected;
+        }
 
         @Override
-        public void keyTyped(KeyEvent e) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            DefaultTableCellRenderer tableCellRendererComponent = (DefaultTableCellRenderer) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (selected.indexOf(row) >= 0) {
+                tableCellRendererComponent.setBorder(new LineBorder(Color.BLUE, 2));
+            }
+            return tableCellRendererComponent;
         }
+    }
+
+    private class MultipleListener extends KeyAdapter implements DocumentListener, FocusListener, PropertyChangeListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
             PickerView.this.keyPressedInTextComponent(e);
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
         }
 
         @Override

@@ -53,29 +53,28 @@ public class PickerModelImpl extends PickerModel {
     public void fetch(Object input) {
 
         List list = new ArrayList();
-        
+
         List propList = new ArrayList();
-        
+
         Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
 
         System.out.println("imagNe " + image.getIconHeight());
-        
-        list.add(new Producto("leche", image,"lala"));
-        list.add(new Producto("mango", image,"frut&veg"));
-        list.add(new Producto("platanos", image,"frut&veg"));
-               
-        fireSearchPerformed(new BrowseEvent(this, list, null));
 
-        if (true) {
-            return;
-        }
+        list.add(new Producto("leche", image, "lala"));
+        list.add(new Producto("mango", image, "frut&veg"));
+        list.add(new Producto("platanos", image, "frut&veg"));
 
-        pageSize = dataPicker.getPageSize();
+        fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("list", list)));
+
+//        pageSize = dataPicker.getPageSize();
         pageNumber = 1;
         listPageHeader = new ArrayList();
         listPageHeader.add(input);
         setForward(false);
         setBackward(false);
+        if (true) {
+            return;
+        }
         displayPage(+0);
     }
 
@@ -140,6 +139,7 @@ public class PickerModelImpl extends PickerModel {
         boolean oldValue = this.backward;
         this.backward = backward;
         propertySupport.firePropertyChange("backward", oldValue, this.backward);
+        fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("backward", backward)));
     }
 
     /**
@@ -149,13 +149,14 @@ public class PickerModelImpl extends PickerModel {
         boolean oldValue = this.forward;
         this.forward = forward;
         propertySupport.firePropertyChange("forward", oldValue, this.forward);
+        fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("forward", forward)));
     }
 
     private void postResults(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
 
         /* From MVC PATTERN XEAM */
-        BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new ArrayList(), null);
+        BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>(propertyName, new ArrayList()));
         fireSearchPerformed(e);
 
         if (propertyName.equals("resultList")) {
@@ -182,12 +183,6 @@ public class PickerModelImpl extends PickerModel {
         if (propertyName.equals("progress") || propertyName.equals("count")) {
             propertySupport.firePropertyChange(evt);
         }
-    }
-
-    @Override
-    public List makeSelection(int[] indexes) {
-        //Ej. selectionList representa ProductoBusqueda el retorno representa Producto
-        return null;
     }
 
     private class BeanWorker extends SwingWorker<List, Void> {

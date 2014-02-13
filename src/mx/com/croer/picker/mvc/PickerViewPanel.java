@@ -23,9 +23,35 @@ public class PickerViewPanel extends javax.swing.JPanel {
      */
     public PickerViewPanel() {
         initComponents();
-        MouseListener ml = new MouseListener();
+        MultipleListener ml = new MultipleListener();
         jTable1.addMouseListener(ml);
         jTable1.addMouseMotionListener(ml);
+        jButton1.addActionListener(ml);
+        jButton2.addActionListener(ml);
+    }
+
+    public void setMessage(String message) {
+        jLabel1.setText(message);
+    }
+
+    public void setEnableForward(boolean enable) {
+        jButton1.setEnabled(enable);
+    }
+
+    public void setEnableBackward(boolean enable) {
+        jButton2.setEnabled(enable);
+    }
+
+    public void setProgress(boolean indeterminate) {
+        jProgressBar1.setIndeterminate(indeterminate);
+    }
+
+    public void setProgress(int progress) {
+        jProgressBar1.setValue(progress);
+    }
+
+    public JTable getTable() {
+        return jTable1;
     }
 
     /**
@@ -121,11 +147,7 @@ public class PickerViewPanel extends javax.swing.JPanel {
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
-    public JTable getTable() {
-        return jTable1;
-    }
-
-    private class MouseListener extends MouseAdapter implements ActionListener {
+    private class MultipleListener extends MouseAdapter implements ActionListener {
 
         @Override
         public void mouseMoved(MouseEvent e) {
@@ -147,12 +169,11 @@ public class PickerViewPanel extends javax.swing.JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource()==jButton1) {
+            if (e.getSource() == jButton1) {
                 firePropertyChange("UP", "", ".");
             } else {
                 firePropertyChange("DOWN", "", ".");
             }
-             
         }
     }
 }

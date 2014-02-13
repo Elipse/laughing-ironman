@@ -5,7 +5,7 @@
  */
 package mx.com.croer.picker.mvc;
 
-import java.util.List;
+import java.util.Map.Entry;
 
 /**
  *
@@ -19,21 +19,16 @@ public class BrowseEvent {
     public static final int PROGRESS = 4;
 
     private final PickerModel model;
-    private final List beanList;
-    private final Integer position;
+    private final Entry<String, Object> property;
 
     /**
      *
      * @param model
-     * @param beanList A list of Beans
-     * @param propList A list of entries made up of String, String  (DEBE ESTAR EN VISTA NO EN MODEL)
-     * @param position null means all of the list must be displayed, not null
-     * means just an instance should be refreshed
+     * @param property
      */
-    public BrowseEvent(PickerModel model, List beanList, Integer position) {
+    public BrowseEvent(PickerModel model, Entry<String, Object> property) {
         this.model = model;
-        this.beanList = beanList;
-        this.position = position;
+        this.property = property;
     }
 
     /**
@@ -46,14 +41,7 @@ public class BrowseEvent {
     /**
      * @return the beanList
      */
-    public List getBeanList() {
-        return beanList;
-    }
-
-    /**
-     * @return the position
-     */
-    public Integer getPosition() {
-        return position;
+    public Entry<String, Object> getProperty() {
+        return property;
     }
 }

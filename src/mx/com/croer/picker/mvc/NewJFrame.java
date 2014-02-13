@@ -31,6 +31,7 @@ public class NewJFrame extends javax.swing.JFrame {
             System.out.println("string " + string);
         }
         PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, String.class);
+        
     }
 
     /**
