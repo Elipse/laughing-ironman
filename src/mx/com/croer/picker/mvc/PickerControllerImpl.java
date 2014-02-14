@@ -6,7 +6,9 @@
 package mx.com.croer.picker.mvc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.Icon;
 import javax.swing.text.JTextComponent;
 
@@ -82,14 +84,17 @@ public final class PickerControllerImpl implements PickerController {
 
     @Override
     public void makeSelection(List objects) {
-        List sourceList = new ArrayList();
+        Map<Object, Integer> map = new HashMap<Object, Integer>();
         
         for (Object object : objects) {
-            sourceList.add(((Item) object).getSource());
+            Item item = (Item) object;
+            map.put(item.getSource(), item.getSelection());
         }
         
-        for (Object source : sourceList) {
-            System.out.println("Origen&Destino " + source.getClass());
+        for (Map.Entry<Object, Integer> entry : map.entrySet()) {
+            Object object = entry.getKey();
+            Integer integer = entry.getValue();
+            System.out.println("PartnerUp " + object + integer);
         }
         //Post objects
     }

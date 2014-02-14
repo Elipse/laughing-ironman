@@ -55,6 +55,7 @@ public class PickerView implements BrowseListener {
     private List<BeanColumn> net;
     private int position;
     private final List<Integer> selected;
+    private int gomez;
 
     public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> net) {
         this.textComponent = textComponent;
@@ -273,9 +274,7 @@ public class PickerView implements BrowseListener {
             BeanColumn beanColumn = net.get(i);
             TableColumn column = table.getColumnModel().getColumn(i);
             if (beanColumn.isVisible()) {
-                if (i == 0) {
-                    column.setCellRenderer(new TableCellRendererX(selected));
-                }
+                column.setCellRenderer(beanColumn.getRenderer());
                 TableCellRenderer cellRenderer = column.getCellRenderer();
                 System.out.println("col " + i + " cellop " + cellRenderer);
                 column.setPreferredWidth(beanColumn.getWidth());
@@ -325,34 +324,8 @@ public class PickerView implements BrowseListener {
     private void selectRow() {
         int selectedRow = table.getSelectedRow();
         Item item = (Item) list.get(selectedRow);
-        item.setSelection(1);
-    }
-
-    private static class TableCellRendererX extends DefaultTableCellRenderer {
-
-        private final List<Integer> selected;
-
-        public TableCellRendererX(List<Integer> selected) {
-            this.selected = selected;
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            DefaultTableCellRenderer tableCellRendererComponent = (DefaultTableCellRenderer) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-            if (value instanceof Producto) {
-                Producto p = (Producto) value;
-//                if (p.isSelected() && column == 0) {
-//            if (selected.indexOf(row) >= 0 && column == 0) {
-                tableCellRendererComponent.setBorder(new LineBorder(Color.MAGENTA, 4));
-//                tableCellRendererComponent.setBackground(Color.MAGENTA);
-
-//                }
-            }
-
-            System.out.println("selected.indexOf(row) " + selected.indexOf(row) + "-row-" + row);
-            return tableCellRendererComponent;
-        }
+        System.out.println("gomez " + gomez);
+        item.setSelection(gomez++);
     }
 
     private class MultipleListener extends KeyAdapter implements DocumentListener, FocusListener, PropertyChangeListener {

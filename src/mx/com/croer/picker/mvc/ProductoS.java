@@ -5,6 +5,7 @@
  */
 package mx.com.croer.picker.mvc;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 import javax.swing.Icon;
@@ -18,7 +19,7 @@ public class ProductoS extends Producto implements Item {
     public static final String PROP_SOURCE = "PROP_SOURCE";
     public static final String PROP_ALIGNMENT = "PROP_ALIGNMENT";
     public static final String PROP_IMAGE = "PROP_IMAGE";
-    public static final String PROP_SELECTION = "PROP_SELECTION";
+    public static final String PROP_SELECTION = "selection";
     private Producto source;
     private List alignment;
     private Icon image;
@@ -109,5 +110,13 @@ public class ProductoS extends Producto implements Item {
     @Override
     public String getDescripcion() {
         return source.getDescripcion();
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 }
