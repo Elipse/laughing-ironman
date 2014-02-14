@@ -106,16 +106,25 @@ public class ProductoS extends Producto implements Item {
     public String getIdproducto() {
         return source.getIdproducto();
     }
+    
+    @Override
+    public void setDescripcion(String descripcion) {
+        String oldDescripcion = source.getDescripcion();
+        source.setDescripcion(descripcion);
+        propertyChangeSupport.firePropertyChange("descripcion", oldDescripcion, descripcion);
+    }
 
     @Override
     public String getDescripcion() {
         return source.getDescripcion();
     }
 
+    //se requiere para beansbinding
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
+    //se requiere para beansbinding
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }

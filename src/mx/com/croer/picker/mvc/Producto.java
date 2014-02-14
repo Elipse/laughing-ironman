@@ -34,7 +34,7 @@ public class Producto implements Serializable {
     @Column(name = "idproducto")
     private String idproducto;
     @Column(name = "descripcion")
-    private String descripcion;
+     String descripcion;
 
     public Producto() {
     }

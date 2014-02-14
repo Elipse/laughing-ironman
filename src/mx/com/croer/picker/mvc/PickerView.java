@@ -326,6 +326,8 @@ public class PickerView implements BrowseListener {
         Item item = (Item) list.get(selectedRow);
         System.out.println("gomez " + gomez);
         item.setSelection(gomez++);
+        Producto p = (Producto) item;
+        p.setDescripcion(p.getDescripcion() + ".");
     }
 
     private class MultipleListener extends KeyAdapter implements DocumentListener, FocusListener, PropertyChangeListener {

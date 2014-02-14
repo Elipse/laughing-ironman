@@ -21,7 +21,7 @@ public final class PickerControllerImpl implements PickerController {
     public PickerControllerImpl(JTextComponent textComponent, Class clas) {
         this.textComponent = textComponent;
         model = createModel(clas);
-        view = createView(PickerControllerImpl.this, model,clas);  
+        view = createView(PickerControllerImpl.this, model, clas);
     }
 
     protected PickerModel createModel(Class clas) {
@@ -40,15 +40,15 @@ public final class PickerControllerImpl implements PickerController {
         return null;
     }
 
-    protected PickerView createView(PickerController controller, PickerModel model,Class clas) {
+    protected PickerView createView(PickerController controller, PickerModel model, Class clas) {
         List<BeanColumn> net = createNet(clas);
-        PickerView localView = new PickerView(textComponent, controller, model,net);
+        PickerView localView = new PickerView(textComponent, controller, model, net);
         return localView;
     }
 
     protected List<BeanColumn> createNet(Class clas) {
         List<BeanColumn> beanColumnList = new ArrayList<>();
-        
+
         beanColumnList.add(new BeanColumn("idproducto", "Desc", String.class, null, true, 100, false));
         beanColumnList.add(new BeanColumn("descripcion", "Mark", String.class, null, true, 100, false));
         beanColumnList.add(new BeanColumn("image", "Imagen", Icon.class, null, true, 64, false));
@@ -85,16 +85,16 @@ public final class PickerControllerImpl implements PickerController {
     @Override
     public void makeSelection(List objects) {
         Map<Object, Integer> map = new HashMap<Object, Integer>();
-        
+
         for (Object object : objects) {
             Item item = (Item) object;
             map.put(item.getSource(), item.getSelection());
         }
-        
+
         for (Map.Entry<Object, Integer> entry : map.entrySet()) {
             Object object = entry.getKey();
             Integer integer = entry.getValue();
-            System.out.println("PartnerUp " + object + integer);
+            System.out.println("PartnerUp " + object.getClass() + " / " + integer);
         }
         //Post objects
     }
