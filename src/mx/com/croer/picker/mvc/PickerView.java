@@ -54,6 +54,7 @@ public class PickerView implements BrowseListener {
     private JTableBinding jTableBinding;
     private List<BeanColumn> net;
     private int position;
+    private final List<Integer> selected;
 
     public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> net) {
         this.textComponent = textComponent;
@@ -96,11 +97,11 @@ public class PickerView implements BrowseListener {
             }
         });
         TableColumn column = table.getColumnModel().getColumn(0);
-        ArrayList<Integer> selected = new ArrayList<Integer>();
-        
-        column.setCellRenderer(new TableCellRendererX(selected));
+        selected = new ArrayList<>();
 
-        selected.add(1);
+//        column.setCellRenderer(new TableCellRendererX(selected));
+        selected.add(0);
+        selected.add(2);
         jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, this.panel.getTable());
         bindingGroup.addBinding(jTableBinding);
     }
@@ -116,7 +117,6 @@ public class PickerView implements BrowseListener {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER: {
                         //setEntityWithoutNotification();
-                        //Enviar los índices de el Modelo subyacente
                         this.controller.makeSelection(list);
                         e.consume();
                         break;
@@ -145,7 +145,7 @@ public class PickerView implements BrowseListener {
                         break;
                     }
                     case KeyEvent.VK_CONTROL:
-                        System.out.println("EligiendoCon");
+                        selectRow();
 //                        boolean isSelected = table.isCellSelected(1, 1);
 //                        DefaultTableCellRenderer defRender = (DefaultTableCellRenderer) table.getCellRenderer(1, 1);
 //                        Component cellRenderer = defRender.getTableCellRendererComponent(table,
@@ -226,7 +226,7 @@ public class PickerView implements BrowseListener {
                 panel.setMessage("Listando...");
                 break;
             case "image":
-                int position = (int) value;
+                int positionk = (int) value;
                 panel.setProgress(++count % list.size());
                 if (count == list.size()) {
                     panel.setMessage("Registros encontrados");
@@ -245,12 +245,10 @@ public class PickerView implements BrowseListener {
 
     private void configTable() {
 
-        JTable jTable = this.panel.getTable();
-
         bindingGroup.removeBinding(jTableBinding);
 
         list = ObservableCollections.observableList(new ArrayList());
-        jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, jTable);
+        jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, table);
 
         for (BeanColumn beanColumn : net) {
             ColumnBinding columnBinding = jTableBinding.addColumnBinding(ELProperty.create("${" + beanColumn.getProperty() + "}"));
@@ -261,26 +259,33 @@ public class PickerView implements BrowseListener {
         bindingGroup.addBinding(jTableBinding);
         bindingGroup.bind();
 
-        javax.swing.DefaultListSelectionModel d;
+        TableColumn columnT = table.getColumnModel().getColumn(0);
+//        columnT.setCellRenderer(new TableCellRendererX(list));
+        System.out.println("Cellis " + " column " + columnT.getIdentifier() + " dd " + columnT.getCellRenderer());
+        table.updateUI();
 
-        System.out.println("jTable.getModel() " + jTable.getSelectionModel());
+        System.out.println("jTable.getModel() " + table.getSelectionModel());
 
         int tableWidth = 0;
 
         //TO DO esta mal remover la columna aqui se defasa net versus Column Model
         for (int i = 0; i < net.size(); i++) {
             BeanColumn beanColumn = net.get(i);
-            TableColumn column = jTable.getColumnModel().getColumn(i);
+            TableColumn column = table.getColumnModel().getColumn(i);
             if (beanColumn.isVisible()) {
-                column.setCellRenderer(beanColumn.getRenderer());
+                if (i == 0) {
+                    column.setCellRenderer(new TableCellRendererX(selected));
+                }
+                TableCellRenderer cellRenderer = column.getCellRenderer();
+                System.out.println("col " + i + " cellop " + cellRenderer);
                 column.setPreferredWidth(beanColumn.getWidth());
                 tableWidth += beanColumn.getWidth();
             } else {
-                jTable.getColumnModel().removeColumn(column);
+                table.getColumnModel().removeColumn(column);
             }
         }
 
-        jTable.setRowHeight(64);
+        table.setRowHeight(64);
     }
 
     public void startProgess() {
@@ -317,9 +322,15 @@ public class PickerView implements BrowseListener {
 //        table.clearSelection();
     }
 
+    private void selectRow() {
+        int selectedRow = table.getSelectedRow();
+        Item item = (Item) list.get(selectedRow);
+        item.setSelection(1);
+    }
+
     private static class TableCellRendererX extends DefaultTableCellRenderer {
 
-        private List<Integer> selected;
+        private final List<Integer> selected;
 
         public TableCellRendererX(List<Integer> selected) {
             this.selected = selected;
@@ -328,9 +339,18 @@ public class PickerView implements BrowseListener {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             DefaultTableCellRenderer tableCellRendererComponent = (DefaultTableCellRenderer) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            if (selected.indexOf(row) >= 0) {
-                tableCellRendererComponent.setBorder(new LineBorder(Color.BLUE, 2));
+
+            if (value instanceof Producto) {
+                Producto p = (Producto) value;
+//                if (p.isSelected() && column == 0) {
+//            if (selected.indexOf(row) >= 0 && column == 0) {
+                tableCellRendererComponent.setBorder(new LineBorder(Color.MAGENTA, 4));
+//                tableCellRendererComponent.setBackground(Color.MAGENTA);
+
+//                }
             }
+
+            System.out.println("selected.indexOf(row) " + selected.indexOf(row) + "-row-" + row);
             return tableCellRendererComponent;
         }
     }

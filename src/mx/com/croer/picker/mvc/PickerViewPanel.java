@@ -82,6 +82,7 @@ public class PickerViewPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2"
             }
         ));
+        jTable1.setEnabled(false);
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setText("U");

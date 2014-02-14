@@ -3,66 +3,85 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package mx.com.croer.picker.mvc;
 
-import javax.swing.Icon;
+import java.io.Serializable;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author elialva
  */
-public class Producto {
-
+@Entity
+@Table(name = "producto")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Producto.findAll", query = "SELECT p FROM Producto p"),
+    @NamedQuery(name = "Producto.findByIdproducto", query = "SELECT p FROM Producto p WHERE p.idproducto = :idproducto"),
+    @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion")})
+public class Producto implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "idproducto")
+    private String idproducto;
+    @Column(name = "descripcion")
     private String descripcion;
-    private Icon imagen;
-    private String marca;
 
-    public Producto(String descripcion, Icon image, String marca) {
-        this.descripcion = descripcion;
-        this.imagen = image;
-        this.marca = marca;
+    public Producto() {
     }
 
-    /**
-     * @return the imagen
-     */
-    public Icon getImage() {
-        return imagen;
+    public Producto(String idproducto) {
+        this.idproducto = idproducto;
     }
 
-    /**
-     * @param image the imagen to set
-     */
-    public void setImage(Icon image) {
-        this.imagen = image;
+    public String getIdproducto() {
+        return idproducto;
     }
 
-    /**
-     * @return the descripcion
-     */
+    public void setIdproducto(String idproducto) {
+        this.idproducto = idproducto;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
 
-    /**
-     * @param descripcion the descripcion to set
-     */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    /**
-     * @return the marca
-     */
-    public String getMarca() {
-        return marca;
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idproducto != null ? idproducto.hashCode() : 0);
+        return hash;
     }
 
-    /**
-     * @param marca the marca to set
-     */
-    public void setMarca(String marca) {
-        this.marca = marca;
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Producto)) {
+            return false;
+        }
+        Producto other = (Producto) object;
+        if ((this.idproducto == null && other.idproducto != null) || (this.idproducto != null && !this.idproducto.equals(other.idproducto))) {
+            return false;
+        }
+        return true;
     }
 
+    @Override
+    public String toString() {
+        return "mx.com.croer.picker.mvc.Producto[ idproducto=" + idproducto + " ]";
+    }
+    
 }

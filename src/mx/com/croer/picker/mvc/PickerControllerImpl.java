@@ -47,9 +47,10 @@ public final class PickerControllerImpl implements PickerController {
     protected List<BeanColumn> createNet(Class clas) {
         List<BeanColumn> beanColumnList = new ArrayList<>();
         
-        beanColumnList.add(new BeanColumn("descripcion", "Desc", String.class, null, true, 100, false));
-        beanColumnList.add(new BeanColumn("marca", "Mark", String.class, null, true, 100, false));
+        beanColumnList.add(new BeanColumn("idproducto", "Desc", String.class, null, true, 100, false));
+        beanColumnList.add(new BeanColumn("descripcion", "Mark", String.class, null, true, 100, false));
         beanColumnList.add(new BeanColumn("image", "Imagen", Icon.class, null, true, 64, false));
+        beanColumnList.add(new BeanColumn("selection", "#", Integer.class, null, true, 15, false));
         return beanColumnList;
     }
 
@@ -81,6 +82,15 @@ public final class PickerControllerImpl implements PickerController {
 
     @Override
     public void makeSelection(List objects) {
+        List sourceList = new ArrayList();
+        
+        for (Object object : objects) {
+            sourceList.add(((Item) object).getSource());
+        }
+        
+        for (Object source : sourceList) {
+            System.out.println("Origen&Destino " + source.getClass());
+        }
         //Post objects
     }
 }

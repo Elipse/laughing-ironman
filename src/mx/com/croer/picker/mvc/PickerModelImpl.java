@@ -60,10 +60,24 @@ public class PickerModelImpl extends PickerModel {
 
         System.out.println("imagNe " + image.getIconHeight());
 
-        list.add(new Producto("leche", image, "lala"));
-        list.add(new Producto("mango", image, "frut&veg"));
-        list.add(new Producto("platanos", image, "frut&veg"));
-
+        Producto p = new Producto("leche");
+        p.setDescripcion("lala");
+        ProductoS ps = new ProductoS(p);
+        ps.setImage(image);
+        ps.setSelection(7);
+        list.add(ps);
+        p = new Producto("mango");
+        p.setDescripcion("frut&veg");
+        ps = new ProductoS(p);
+        ps.setImage(image);
+        ps.setSelection(3);
+        list.add(ps);
+        p = new Producto("platanos");
+        p.setDescripcion("frut&veg");
+        ps = new ProductoS(p);
+        ps.setImage(image);
+        ps.setSelection(null);
+        list.add(ps);
         fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("list", list)));
 
 //        pageSize = dataPicker.getPageSize();
