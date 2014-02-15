@@ -5,11 +5,13 @@
  */
 package mx.com.croer.picker.mvc;
 
+import com.sun.java.swing.plaf.windows.WindowsRadioButtonUI;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -22,7 +24,6 @@ public class NewJFrame extends javax.swing.JFrame {
      * Creates new form NewJFrame
      */
     public NewJFrame() throws IOException {
-
         initComponents();
         String path = "C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Buscq";
 
@@ -30,7 +31,7 @@ public class NewJFrame extends javax.swing.JFrame {
         for (String string : readLines) {
             System.out.println("string " + string);
         }
-        PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, String.class);
+        PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, Producto.class);
         
     }
 

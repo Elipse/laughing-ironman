@@ -26,14 +26,17 @@ public final class PickerControllerImpl implements PickerController {
 
     protected PickerModel createModel(Class clas) {
         DataPicker dataPicker = createDataPicker(clas);
+        System.out.println("create Mode l " + dataPicker );
         PickerModel localModel = new PickerModelImpl(dataPicker);
         return localModel;
     }
 
     protected DataPicker createDataPicker(Class clas) {
-        switch (clas.getName()) {
+        System.out.println("clasee " + clas.getSimpleName());
+        switch (clas.getSimpleName()) {
+            
             case "Producto":
-                break;
+                return new DataPickerImp();
             default:
                 break;
         }
@@ -50,7 +53,7 @@ public final class PickerControllerImpl implements PickerController {
         List<BeanColumn> beanColumnList = new ArrayList<>();
 
         beanColumnList.add(new BeanColumn("idproducto", "Desc", String.class, null, true, 100, false));
-        beanColumnList.add(new BeanColumn("descripcion", "Mark", String.class, null, true, 100, false));
+//        beanColumnList.add(new BeanColumn("descripcion", "Mark", String.class, null, true, 100, false));
         beanColumnList.add(new BeanColumn("image", "Imagen", Icon.class, null, true, 64, false));
         beanColumnList.add(new BeanColumn("selection", "#", Integer.class, null, true, 15, false));
         return beanColumnList;

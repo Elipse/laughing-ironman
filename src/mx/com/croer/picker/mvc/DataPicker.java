@@ -10,43 +10,36 @@ import javax.swing.Icon;
 
 /**
  * Esta es una prueba de upload
+ *
  * @author elialva
  */
 public abstract class DataPicker {
 
     public synchronized List readPage(Object pageHeader) {
-        return null;
+        return extractPage(pageHeader);
     }
 
     public synchronized List readPage(String pageHeader) {
-        return null;
+        return extractPage(pageHeader);
     }
 
-    public Icon createIcon(Object bean) {
-        return null;
-    }
+    public abstract Icon createIcon(Object bean);
 
     public Integer countRows(Object input) {
         return null;
-    }    
+    }
 
     public int getPageSize() {
         return 0;
     }
 
-    
-
     public boolean hasIcon() {
         return true;
     }
 
-    
-
     public Color nextMode() {
         return null;
     }
-
-    
 
     public List<BeanColumn> readColumnList() {
         return null;
@@ -56,4 +49,7 @@ public abstract class DataPicker {
         return 0;
     }
 
+    public abstract List extractPage(Object pageHeader);
+
+    public abstract List extractPage(String pageHeader);
 }

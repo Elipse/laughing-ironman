@@ -43,11 +43,13 @@ public class PickerViewPanel extends javax.swing.JPanel {
     }
 
     public void setProgress(boolean indeterminate) {
+        jProgressBar1.setValue(0);
         jProgressBar1.setIndeterminate(indeterminate);
     }
 
     public void setProgress(int progress) {
         jProgressBar1.setValue(progress);
+        jProgressBar1.setIndeterminate(false);
     }
 
     public JTable getTable() {
@@ -73,13 +75,10 @@ public class PickerViewPanel extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2"
+
             }
         ));
         jTable1.setEnabled(false);

@@ -18,7 +18,7 @@ public class ProductoS extends Producto implements Item {
 
     public static final String PROP_SOURCE = "PROP_SOURCE";
     public static final String PROP_ALIGNMENT = "PROP_ALIGNMENT";
-    public static final String PROP_IMAGE = "PROP_IMAGE";
+    public static final String PROP_IMAGE = "image";
     public static final String PROP_SELECTION = "selection";
     private Producto source;
     private List alignment;
@@ -27,8 +27,11 @@ public class ProductoS extends Producto implements Item {
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public ProductoS(Producto producto) {
+        super(producto.getIdproducto());
         this.source = producto;
     }
+    
+    
 
     /**
      * @return the source

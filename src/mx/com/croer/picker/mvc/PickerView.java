@@ -5,10 +5,9 @@
  */
 package mx.com.croer.picker.mvc;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
@@ -19,11 +18,9 @@ import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
@@ -52,59 +49,42 @@ public class PickerView implements BrowseListener {
     private int count;
     private final BindingGroup bindingGroup;
     private JTableBinding jTableBinding;
-    private List<BeanColumn> net;
+    private final List<BeanColumn> crisscross;
     private int position;
-    private final List<Integer> selected;
     private int gomez;
 
-    public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> net) {
+    public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> crisscross) {
         this.textComponent = textComponent;
         this.controller = controller;
         this.model = model;
-        this.net = net;
-        this.panel = createPanel();
+        this.crisscross = crisscross;
 
+        //Listen to the model's changes
         this.model.addBrowseListener(PickerView.this);
 
+        //Listen to the text component's events and panel's events
         MultipleListener ml = new MultipleListener();
         this.textComponent.addKeyListener(ml);
         this.textComponent.addFocusListener(ml);
         this.textComponent.getDocument().addDocumentListener(ml);
+
+        //Creates the floating panel
+        this.panel = createPanel();
         this.panel.addPropertyChangeListener(ml);
+        this.popup = new JPopupMenu();
+        this.popup.setFocusable(false);
+        this.popup.add(this.panel);
 
-        popup = new JPopupMenu();
-        popup.setFocusable(false);
-        popup.add(panel);
+        //Get the table from the floating panel so that configure the crisscross
+        this.table = this.panel.getTable();
+        this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        bindingGroup = new BindingGroup();
-        list = ObservableCollections.observableList(new ArrayList());
-        table = this.panel.getTable();
-        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        table.setModel(new AbstractTableModel() {
-
-            @Override
-            public int getRowCount() {
-                return 0;
-            }
-
-            @Override
-            public int getColumnCount() {
-                return net.size();
-            }
-
-            @Override
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                return null;
-            }
-        });
-        TableColumn column = table.getColumnModel().getColumn(0);
-        selected = new ArrayList<>();
-
-//        column.setCellRenderer(new TableCellRendererX(selected));
-        selected.add(0);
-        selected.add(2);
-        jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, this.panel.getTable());
-        bindingGroup.addBinding(jTableBinding);
+        //The following lines are to avoid Null Pointer Exception
+        this.bindingGroup = new BindingGroup();
+        this.list = ObservableCollections.observableList(new ArrayList());
+        this.jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, this.list, this.panel.getTable());
+        list.clear();
+        this.bindingGroup.addBinding(this.jTableBinding);
     }
 
     private PickerViewPanel createPanel() {
@@ -117,8 +97,13 @@ public class PickerView implements BrowseListener {
             if (popup.isShowing()) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER: {
-                        //setEntityWithoutNotification();
-                        this.controller.makeSelection(list);
+                        selectRow(0);
+                        displayPopup(false);
+                        controller.makeSelection(list);
+                        for (Object object : list) {
+                            Item item = (Item) object;
+                            item.setSelection(null);
+                        }
                         e.consume();
                         break;
                     }
@@ -127,12 +112,12 @@ public class PickerView implements BrowseListener {
                         break;
                     }
                     case KeyEvent.VK_PAGE_UP: {
-                        this.controller.backward();
+                        controller.backward();
                         e.consume();
                         break;
                     }
                     case KeyEvent.VK_PAGE_DOWN: {
-                        this.controller.forward();
+                        controller.forward();
                         e.consume();
                         break;
                     }
@@ -146,13 +131,17 @@ public class PickerView implements BrowseListener {
                         break;
                     }
                     case KeyEvent.VK_CONTROL:
-                        selectRow();
-//                        boolean isSelected = table.isCellSelected(1, 1);
-//                        DefaultTableCellRenderer defRender = (DefaultTableCellRenderer) table.getCellRenderer(1, 1);
-//                        Component cellRenderer = defRender.getTableCellRendererComponent(table,
-//                                "Huml", isSelected, false, 1, 1);
-//                        cellRenderer.setBackground(Color.MAGENTA);
-
+                        String keys = KeyEvent.getModifiersExText(e.getModifiersEx());
+                        switch (keys) {
+                            case "Ctrl":
+                                selectRow(+1);
+                                break;
+                            case "Ctrl+Shift":
+                                selectRow(-1);
+                                break;
+                        }
+                        break;
+                    default:
                 }
             } else {
                 switch (e.getKeyCode()) {
@@ -181,6 +170,7 @@ public class PickerView implements BrowseListener {
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_DOWN:
                         this.controller.fetch(this.textComponent.getText()); //si se canceló empieza desde el inicio
+                        list.clear();
                         break;
                 }
             }
@@ -189,6 +179,7 @@ public class PickerView implements BrowseListener {
 
     private void documentChangeInTextComponent(DocumentEvent e) {
         this.controller.fetch(this.textComponent.getText());
+        list.clear();
     }
 
     private void focusLostInTextComponent(FocusEvent e) {
@@ -217,20 +208,20 @@ public class PickerView implements BrowseListener {
     public void update(BrowseEvent e) {
         String key = e.getProperty().getKey();
         Object value = e.getProperty().getValue();
-
+        
         switch (key) {
             case "list":
                 configTable();
-                list.addAll((Collection) value);
+                list.addAll((List) value);
                 count = 0;
                 panel.setProgress(count);
                 panel.setMessage("Listando...");
                 break;
             case "image":
-                int positionk = (int) value;
-                panel.setProgress(++count % list.size());
+                double p = ((++count + 0.0) / list.size()) * 100;
+                panel.setProgress((int) p);
                 if (count == list.size()) {
-                    panel.setMessage("Registros encontrados");
+                    panel.setMessage("Registros encontrados ");
                 }
                 break;
             case "backward":
@@ -251,7 +242,7 @@ public class PickerView implements BrowseListener {
         list = ObservableCollections.observableList(new ArrayList());
         jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, table);
 
-        for (BeanColumn beanColumn : net) {
+        for (BeanColumn beanColumn : crisscross) {
             ColumnBinding columnBinding = jTableBinding.addColumnBinding(ELProperty.create("${" + beanColumn.getProperty() + "}"));
             columnBinding.setColumnName(beanColumn.getColName());
             columnBinding.setColumnClass(beanColumn.getClase());
@@ -261,17 +252,11 @@ public class PickerView implements BrowseListener {
         bindingGroup.bind();
 
         TableColumn columnT = table.getColumnModel().getColumn(0);
-//        columnT.setCellRenderer(new TableCellRendererX(list));
-        System.out.println("Cellis " + " column " + columnT.getIdentifier() + " dd " + columnT.getCellRenderer());
-        table.updateUI();
-
-        System.out.println("jTable.getModel() " + table.getSelectionModel());
-
         int tableWidth = 0;
 
         //TO DO esta mal remover la columna aqui se defasa net versus Column Model
-        for (int i = 0; i < net.size(); i++) {
-            BeanColumn beanColumn = net.get(i);
+        for (int i = 0; i < crisscross.size(); i++) {
+            BeanColumn beanColumn = crisscross.get(i);
             TableColumn column = table.getColumnModel().getColumn(i);
             if (beanColumn.isVisible()) {
                 column.setCellRenderer(beanColumn.getRenderer());
@@ -306,7 +291,7 @@ public class PickerView implements BrowseListener {
     }
 
     private void changeListSelectedIndex(int i) {
-        this.position += i;
+        position += i;
         int rows = table.getRowCount();
 
         if (position < 0) {
@@ -317,15 +302,26 @@ public class PickerView implements BrowseListener {
             position = 0;
         }
 
-        this.table.setRowSelectionInterval(position, position);
-//        table.clearSelection();
+        table.setRowSelectionInterval(position, position);
     }
 
-    private void selectRow() {
-        int selectedRow = table.getSelectedRow();
-        Item item = (Item) list.get(selectedRow);
-        System.out.println("gomez " + gomez);
-        item.setSelection(gomez++);
+    private void selectRow(int amount) {
+        if (table.getSelectedRow() == -1) {
+            return;
+        }
+
+        int i = table.getSelectedRow();
+        i = table.convertRowIndexToModel(i);
+
+        Item item = (Item) list.get(i);
+        i = item.getSelection() == null ? amount == 0 ? 1 : amount : item.getSelection() + amount;
+        if (i > 0) {
+            item.setSelection(i);
+        } else {
+            item.setSelection(null);
+        }
+
+        //In order to test the bind
         Producto p = (Producto) item;
         p.setDescripcion(p.getDescripcion() + ".");
     }

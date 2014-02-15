@@ -9,6 +9,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.media.Time;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingWorker;
@@ -51,44 +52,13 @@ public class PickerModelImpl extends PickerModel {
 
     @Override
     public void fetch(Object input) {
-
-        List list = new ArrayList();
-
-        List propList = new ArrayList();
-
-        Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
-
-        System.out.println("imagNe " + image.getIconHeight());
-
-        Producto p = new Producto("leche");
-        p.setDescripcion("lala");
-        ProductoS ps = new ProductoS(p);
-        ps.setImage(image);
-        ps.setSelection(7);
-        list.add(ps);
-        p = new Producto("mango");
-        p.setDescripcion("frut&veg");
-        ps = new ProductoS(p);
-        ps.setImage(image);
-        ps.setSelection(3);
-        list.add(ps);
-        p = new Producto("platanos");
-        p.setDescripcion("frut&veg");
-        ps = new ProductoS(p);
-        ps.setImage(image);
-        ps.setSelection(null);
-        list.add(ps);
-        fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("list", list)));
-
-//        pageSize = dataPicker.getPageSize();
+        System.out.println("dataPicker " + dataPicker);
+        pageSize = dataPicker.getPageSize();
         pageNumber = 1;
         listPageHeader = new ArrayList();
         listPageHeader.add(input);
         setForward(false);
         setBackward(false);
-        if (true) {
-            return;
-        }
         displayPage(+0);
     }
 
@@ -135,7 +105,9 @@ public class PickerModelImpl extends PickerModel {
         beanWorker = new BeanWorker(sync, pageHeader, pageSize + 1, iconWorker);  //se agrega a constr para no hacer referencias a PickerModelImpl
         beanWorker.addPropertyChangeListener(classListener);
 
+        System.out.println("beforeExecute " + beanWorker);
         beanWorker.execute();  //beanWorker ejecuta iconWorker.execute()
+        System.out.println("afterExecute " + beanWorker);
 
         if (direction == 0) {  //Inicia nueva búsqueda
             countWorker.cancel(false);
@@ -169,29 +141,32 @@ public class PickerModelImpl extends PickerModel {
     private void postResults(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
 
-        /* From MVC PATTERN XEAM */
-        BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>(propertyName, new ArrayList()));
-        fireSearchPerformed(e);
-
         if (propertyName.equals("resultList")) {
             resultList = (List) evt.getNewValue();
-            setForward(resultList.size() > pageSize ? true : false);
+            setForward(resultList.size() > pageSize);
             if (resultList.size() > pageSize && pageNumber > listPageHeader.size()) {
                 listPageHeader.add(resultList.get(pageSize + 1));
             }
-            propertySupport.firePropertyChange(evt);
+            BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("list", resultList));
+            fireSearchPerformed(e);
         }
 
         if (propertyName.equals("entry")) {
             SimpleEntry<Object, Icon> entry = (SimpleEntry<Object, Icon>) evt.getNewValue();
-            Object key = entry.getKey();
+            Item key = (Item) entry.getKey();
+
             Icon value = entry.getValue();
 
             int index = resultList.indexOf(key);
             if (index < 0) {
                 throw new IllegalStateException("Abnormal ending - Thread logic is wrong");
             }
-            propertySupport.fireIndexedPropertyChange("entry", index, key, value);
+
+            Item item = (Item) resultList.get(index);
+            item.setImage(value);
+
+            BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("image", index));
+            fireSearchPerformed(e);
         }
 
         if (propertyName.equals("progress") || propertyName.equals("count")) {
@@ -211,12 +186,17 @@ public class PickerModelImpl extends PickerModel {
             this.pageHeader = pageHeader;
             this.rows = rows;
             this.iconWorker = iconWorker;
+            System.out.println("Creando BeanWorker");
         }
 
         @Override
         protected List doInBackground() throws Exception {
+            //Si ocurre una excepcion aqui manda llamar a done de inmediato
+            System.out.println("DOFP");
             List o = PickerModelImpl.this.dataPicker.readPage(pageHeader);  //dataPicker sync or local variables always
-            System.out.println("evenflo " + o);
+            System.out.println("DOFP DESPUES " + System.currentTimeMillis());
+            Object get = o.get(0);
+            System.out.println("evenflo " + ((Item) get).getImage());
             return o;
         }
 
@@ -229,11 +209,12 @@ public class PickerModelImpl extends PickerModel {
 
             List resultList = new ArrayList();
             try {
-                System.out.println("af" + this.getState().name());
+                System.out.println("af" + this.getState().name() + " getop " + get());
                 resultList.addAll(get());
-            } catch (Exception ex) {
+            } catch (Exception ex) {  //Cacha las excepciones de doInBackground
                 System.out.println("beer" + this.getState().name());
-//                Exceptions.printStackTrace(ex);
+                System.out.println("exception " + ex);
+////                Exceptions.printStackTrace(ex);
             }
 
             resultList = Collections.unmodifiableList(resultList);
