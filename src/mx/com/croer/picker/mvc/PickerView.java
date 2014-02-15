@@ -51,7 +51,6 @@ public class PickerView implements BrowseListener {
     private JTableBinding jTableBinding;
     private final List<BeanColumn> crisscross;
     private int position;
-    private int gomez;
 
     public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> crisscross) {
         this.textComponent = textComponent;

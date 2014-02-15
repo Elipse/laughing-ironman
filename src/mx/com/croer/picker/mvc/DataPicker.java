@@ -19,10 +19,6 @@ public abstract class DataPicker {
         return extractPage(pageHeader);
     }
 
-    public synchronized List readPage(String pageHeader) {
-        return extractPage(pageHeader);
-    }
-
     public abstract Icon createIcon(Object bean);
 
     public Integer countRows(Object input) {
@@ -51,5 +47,4 @@ public abstract class DataPicker {
 
     public abstract List extractPage(Object pageHeader);
 
-    public abstract List extractPage(String pageHeader);
 }

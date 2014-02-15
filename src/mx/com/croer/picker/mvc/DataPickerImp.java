@@ -26,7 +26,7 @@ public class DataPickerImp extends DataPicker {
 
     @Override
     public List extractPage(Object pageHeader) {
-        System.out.println("pageHEadr " + pageHeader);
+        System.out.println("pageHEadr " + pageHeader.getClass());
         List list = new ArrayList();
 
         Producto p = new Producto("leche");
@@ -51,12 +51,6 @@ public class DataPickerImp extends DataPicker {
             Logger.getLogger(DataPickerImp.class.getName()).log(Level.SEVERE, null, ex);
         }
         return list;
-    }
-
-    @Override
-    public List extractPage(String pageHeader) {
-        System.out.println("pageHEadrST " + pageHeader);
-        return null;
     }
 
     @Override

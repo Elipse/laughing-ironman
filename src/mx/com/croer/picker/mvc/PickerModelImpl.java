@@ -9,9 +9,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.media.Time;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.SwingWorker;
 //import org.openide.util.Exceptions;
 
@@ -124,7 +122,7 @@ public class PickerModelImpl extends PickerModel {
     private void setBackward(boolean backward) {
         boolean oldValue = this.backward;
         this.backward = backward;
-        propertySupport.firePropertyChange("backward", oldValue, this.backward);
+//        propertySupport.firePropertyChange("backward", oldValue, this.backward);
         fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("backward", backward)));
     }
 
@@ -134,7 +132,7 @@ public class PickerModelImpl extends PickerModel {
     private void setForward(boolean forward) {
         boolean oldValue = this.forward;
         this.forward = forward;
-        propertySupport.firePropertyChange("forward", oldValue, this.forward);
+//        propertySupport.firePropertyChange("forward", oldValue, this.forward);
         fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("forward", forward)));
     }
 
