@@ -14,7 +14,7 @@ import javax.swing.Icon;
  *
  * @author elialva
  */
-public class ProductoS extends Producto implements Item {
+public class ProductoS implements Item {
 
     public static final String PROP_SOURCE = "PROP_SOURCE";
     public static final String PROP_ALIGNMENT = "PROP_ALIGNMENT";
@@ -27,7 +27,7 @@ public class ProductoS extends Producto implements Item {
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public ProductoS(Producto producto) {
-        super(producto.getIdproducto());
+//        super(producto.getIdproducto());
         this.source = producto;
     }
     
@@ -105,19 +105,19 @@ public class ProductoS extends Producto implements Item {
         propertyChangeSupport.firePropertyChange(PROP_SELECTION, oldSelection, selection);
     }
 
-    @Override
+//    @Override
     public String getIdproducto() {
         return source.getIdproducto();
     }
     
-    @Override
+//    @Override
     public void setDescripcion(String descripcion) {
         String oldDescripcion = source.getDescripcion();
         source.setDescripcion(descripcion);
         propertyChangeSupport.firePropertyChange("descripcion", oldDescripcion, descripcion);
     }
 
-    @Override
+//    @Override
     public String getDescripcion() {
         return source.getDescripcion();
     }

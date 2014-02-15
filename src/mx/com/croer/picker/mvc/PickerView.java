@@ -47,7 +47,7 @@ public class PickerView implements BrowseListener {
     private boolean done = true;
     private List list;
     private int count;
-    private final BindingGroup bindingGroup;
+    private BindingGroup bindingGroup;
     private JTableBinding jTableBinding;
     private final List<BeanColumn> crisscross;
     private int position;
@@ -75,16 +75,7 @@ public class PickerView implements BrowseListener {
         this.popup.setFocusable(false);
         this.popup.add(this.panel);
 
-        //Get the table from the floating panel so that configure the crisscross
-        this.table = this.panel.getTable();
-        this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        //The following lines are to avoid Null Pointer Exception
-        this.bindingGroup = new BindingGroup();
-        this.list = ObservableCollections.observableList(new ArrayList());
-        this.jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, this.list, this.panel.getTable());
-        list.clear();
-        this.bindingGroup.addBinding(this.jTableBinding);
+        configTable();
     }
 
     private PickerViewPanel createPanel() {
@@ -208,10 +199,9 @@ public class PickerView implements BrowseListener {
     public void update(BrowseEvent e) {
         String key = e.getProperty().getKey();
         Object value = e.getProperty().getValue();
-        
+
         switch (key) {
             case "list":
-                configTable();
                 list.addAll((List) value);
                 count = 0;
                 panel.setProgress(count);
@@ -236,9 +226,15 @@ public class PickerView implements BrowseListener {
     }
 
     private void configTable() {
+        //Get the table from the floating panel so that configure the crisscross
+        table = panel.getTable();
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        bindingGroup.removeBinding(jTableBinding);
+        bindingGroup = new BindingGroup();
 
+//        if (jTableBinding != null) {
+//            bindingGroup.removeBinding(jTableBinding);
+//        }
         list = ObservableCollections.observableList(new ArrayList());
         jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ_WRITE, list, table);
 
@@ -322,8 +318,8 @@ public class PickerView implements BrowseListener {
         }
 
         //In order to test the bind
-        Producto p = (Producto) item;
-        p.setDescripcion(p.getDescripcion() + ".");
+        //Producto p = (Producto) item;
+        //p.setDescripcion(p.getDescripcion() + ".");
     }
 
     private class MultipleListener extends KeyAdapter implements DocumentListener, FocusListener, PropertyChangeListener {
