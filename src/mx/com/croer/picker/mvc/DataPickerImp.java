@@ -20,28 +20,28 @@ import javax.swing.ImageIcon;
 public class DataPickerImp extends DataPicker {
 
     @Override
-    public int getPageSize() {
+    public int createPageSize() {
         return 3;
     }
 
     @Override
-    public List extractPage(Object pageHeader) {
+    public List createPage(Object pageHeader) {
         System.out.println("pageHEadr " + pageHeader.getClass());
         List list = new ArrayList();
 
-        Producto p = new Producto("leche");
+        ProductoSearch p = new ProductoSearch("leche");
         p.setDescripcion("lala");
-        ProductoS ps = new ProductoS(p);
+        ProductoProxy ps = new ProductoProxy(p);
         ps.setSelection(7);
         list.add(ps);
-        p = new Producto("mango");
+        p = new ProductoSearch("mango");
         p.setDescripcion("frut&veg");
-        ps = new ProductoS(p);
+        ps = new ProductoProxy(p);
         ps.setSelection(3);
         list.add(ps);
-        p = new Producto("platanos");
+        p = new ProductoSearch("platanos");
         p.setDescripcion("frut&veg");
-        ps = new ProductoS(p);
+        ps = new ProductoProxy(p);
         ps.setSelection(null);
         list.add(ps);
         try {

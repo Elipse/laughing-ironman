@@ -31,8 +31,7 @@ public class NewJFrame extends javax.swing.JFrame {
         for (String string : readLines) {
             System.out.println("string " + string);
         }
-        PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, Producto.class);
-        
+        PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, ProductoSearch.class);
     }
 
     /**

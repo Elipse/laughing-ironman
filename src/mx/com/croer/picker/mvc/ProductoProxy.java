@@ -14,19 +14,19 @@ import javax.swing.Icon;
  *
  * @author elialva
  */
-public class ProductoS implements Item {
+public class ProductoProxy implements Item {
 
     public static final String PROP_SOURCE = "PROP_SOURCE";
     public static final String PROP_ALIGNMENT = "PROP_ALIGNMENT";
     public static final String PROP_IMAGE = "image";
     public static final String PROP_SELECTION = "selection";
-    private Producto source;
+    private ProductoSearch source;
     private List alignment;
     private Icon image;
     private Integer selection;
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
-    public ProductoS(Producto producto) {
+    public ProductoProxy(ProductoSearch producto) {
 //        super(producto.getIdproducto());
         this.source = producto;
     }
@@ -47,7 +47,7 @@ public class ProductoS implements Item {
     @Override
     public void setSource(Object source) {
         java.lang.Object oldSource = this.source;
-        this.source = (Producto) source;
+        this.source = (ProductoSearch) source;
         propertyChangeSupport.firePropertyChange(PROP_SOURCE, oldSource, source);
     }
 

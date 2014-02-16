@@ -26,16 +26,13 @@ public final class PickerControllerImpl implements PickerController {
 
     protected PickerModel createModel(Class clas) {
         DataPicker dataPicker = createDataPicker(clas);
-        System.out.println("create Mode l " + dataPicker );
         PickerModel localModel = new PickerModelImpl(dataPicker);
         return localModel;
     }
 
     protected DataPicker createDataPicker(Class clas) {
-        System.out.println("clasee " + clas.getSimpleName());
         switch (clas.getSimpleName()) {
-            
-            case "Producto":
+            case "ProductoSearch":
                 return new DataPickerImp();
             default:
                 break;

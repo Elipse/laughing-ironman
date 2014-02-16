@@ -51,7 +51,7 @@ public class PickerModelImpl extends PickerModel {
     @Override
     public void fetch(Object input) {
         System.out.println("dataPicker " + dataPicker);
-        pageSize = dataPicker.getPageSize();
+        pageSize = dataPicker.createPageSize();
         pageNumber = 1;
         listPageHeader = new ArrayList();
         listPageHeader.add(input);
@@ -190,11 +190,7 @@ public class PickerModelImpl extends PickerModel {
         @Override
         protected List doInBackground() throws Exception {
             //Si ocurre una excepcion aqui manda llamar a done de inmediato
-            System.out.println("DOFP");
             List o = PickerModelImpl.this.dataPicker.readPage(pageHeader);  //dataPicker sync or local variables always
-            System.out.println("DOFP DESPUES " + System.currentTimeMillis());
-            Object get = o.get(0);
-            System.out.println("evenflo " + ((Item) get).getImage());
             return o;
         }
 
@@ -219,10 +215,10 @@ public class PickerModelImpl extends PickerModel {
 
             firePropertyChange("resultList", null, resultList);
 
-            if (PickerModelImpl.this.dataPicker.hasIcon()) {
-                this.iconWorker.setResultList(resultList);
-                this.iconWorker.execute();
-            }
+//            if (PickerModelImpl.this.dataPicker.hasIcon()) {
+            this.iconWorker.setResultList(resultList);
+            this.iconWorker.execute();
+//            }
         }
     }
 

@@ -5,6 +5,8 @@
 package mx.com.croer.picker.mvc;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
 import java.util.List;
 import javax.swing.Icon;
 
@@ -16,35 +18,47 @@ import javax.swing.Icon;
 public abstract class DataPicker {
 
     public synchronized List readPage(Object pageHeader) {
-        return extractPage(pageHeader);
+        return createPage(pageHeader);
     }
 
-    public abstract Icon createIcon(Object bean);
+    public Icon createIcon(Object bean) {
+        return new MissingItem(Color.yellow);
+    }
 
     public Integer countRows(Object input) {
         return null;
     }
 
-    public int getPageSize() {
-        return 0;
+    public abstract int createPageSize();
+
+    public abstract List createPage(Object pageHeader);
+
+}
+
+class MissingItem implements Icon {
+
+    Color color;
+
+    public MissingItem(Color color) {
+        this.color = color;
     }
 
-    public boolean hasIcon() {
-        return true;
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+        Color oldColor = g.getColor();
+        g.setColor(color);
+        g.fill3DRect(x, y, getIconWidth(), getIconHeight(), true);
+        g.setColor(oldColor);
     }
 
-    public Color nextMode() {
-        return null;
+    @Override
+    public int getIconWidth() {
+        return 12;
     }
 
-    public List<BeanColumn> readColumnList() {
-        return null;
+    @Override
+    public int getIconHeight() {
+        return 12;
     }
-
-    public int getHeightRow() {
-        return 0;
-    }
-
-    public abstract List extractPage(Object pageHeader);
 
 }
