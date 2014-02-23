@@ -20,13 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author elialva
  */
-@Entity
-@Table(name = "producto")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Producto.findAll", query = "SELECT p FROM Producto p"),
-    @NamedQuery(name = "Producto.findByIdproducto", query = "SELECT p FROM Producto p WHERE p.idproducto = :idproducto"),
-    @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion")})
+//@Entity
+//@Table(name = "producto")
+//@XmlRootElement
+//@NamedQueries({
+//    @NamedQuery(name = "Producto.findAll", query = "SELECT p FROM Producto p"),
+//    @NamedQuery(name = "Producto.findByIdproducto", query = "SELECT p FROM Producto p WHERE p.idproducto = :idproducto"),
+//    @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion")})
 public class ProductoSearch implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -5,14 +5,17 @@
  */
 package mx.com.croer.picker.mvc;
 
-import com.sun.java.swing.plaf.windows.WindowsRadioButtonUI;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JCheckBox;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import mx.com.croer.busqueda.entities.Simigrama;
+import mx.com.croer.catalogodigital.entities.Marca;
 import org.apache.commons.io.FileUtils;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  *
@@ -32,6 +35,20 @@ public class NewJFrame extends javax.swing.JFrame {
             System.out.println("string " + string);
         }
         PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, ProductoSearch.class);
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+        EntityManagerFactory bean = context.getBean("emf",EntityManagerFactory.class);
+        TypedQuery<Marca> createNamedQuery = bean.createEntityManager().createNamedQuery("Marca.findAll", Marca.class);
+        List<Marca> resultList = createNamedQuery.getResultList();
+        for (Marca marca : resultList) {
+            System.out.println("MarcaBySpring " + marca.getDescripcion());
+        }
+        
+        EntityManagerFactory bean2 = context.getBean("emfFte",EntityManagerFactory.class);
+        TypedQuery<Simigrama> createNamedQuery2 = bean2.createEntityManager().createNamedQuery("Simigrama.findAll", Simigrama.class);
+        List<Simigrama> resultList2 = createNamedQuery2.getResultList();
+        for (Simigrama simigrama : resultList2) {
+            System.out.println("SimigramaBySpring " + simigrama.getSimigrama());
+        }        
     }
 
     /**
