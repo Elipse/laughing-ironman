@@ -6,14 +6,14 @@
 package mx.com.croer.picker.access;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author elialva
  */
-public class Candidate {
+public interface Candidate {
 
-    public List delimit(String input, String entity) {
-        return null;
-    }
+    public List<Map<String,Object>> delimit(String input, String entity);
+
 }

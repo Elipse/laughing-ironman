@@ -12,7 +12,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
         <property name="password" value="root"/>
     </bean>
     
-    <bean id="dataSourceFte" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="dataSourceSearch" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/busqueda?zeroDateTimeBehavior=convertToNull"/>
         <property name="username" value="root"/>
@@ -38,8 +38,8 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
         </property>
     </bean>
     
-       <bean id="emfFte" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="dataSourceFte"/>
+    <bean id="emfFte" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSourceSearch"/>
         <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
         <property name="persistenceUnitName" value="JavaProject1PU3"/>
         <property name="jpaPropertyMap">
@@ -49,5 +49,8 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
         </property>
     </bean>
     
+    <bean id="candidateK" class="mx.com.croer.picker.access.CandidateK">
+        <property name="dataSource" ref="dataSourceSearch"/>
+    </bean>
     
 </beans>
