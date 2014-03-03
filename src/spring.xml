@@ -53,11 +53,11 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
         </property>
     </bean>
     
-    <bean id="candidateK" class="mx.com.croer.picker.access.Filter">
+    <bean id="searchFetcher" class="mx.com.croer.picker.access.SearchFetcher">
         <property name="dataSource" ref="dataSourceSearch"/>
     </bean>
     
-    <bean id="cheto" class="mx.com.croer.picker.access.ItemCreatorImpl">
+    <bean id="cheto" class="mx.com.croer.picker.access.BusinessFetcherImpl">
     </bean>
     
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

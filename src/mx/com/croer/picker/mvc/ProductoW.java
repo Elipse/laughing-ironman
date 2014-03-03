@@ -14,7 +14,7 @@ import mx.com.croer.catalogodigital.entities.Producto;
  *
  * @author elialva
  */
-public class ProductoW implements ItemProxy {
+public class ProductoW implements Item {
     private Producto producto;
     private List alignment;
     private String context;

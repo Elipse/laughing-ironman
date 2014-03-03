@@ -5,20 +5,16 @@
  */
 package mx.com.croer.picker.access;
 
-import mx.com.croer.picker.mvc.ItemProxy;
+import mx.com.croer.picker.mvc.Item;
 
 /**
  *
  * @author elialva
  */
-public interface ItemCreator {
+public interface BusinessFetcher {
     
-    public String getCandidateSql();
-    
-    public String geXHintSql();
+    public <T extends Object> T createBusinessObject(Object key, Class<T> type);
 
-    public <T extends Object> T createItem(Object key, Class<T> type);
-
-    public ItemProxy createItemProxy(Object item);
+    public Item createItem(Object item);
 
 }

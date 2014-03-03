@@ -78,7 +78,7 @@ public class DataPickerImp extends DataPicker {
 
         Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
 
-        ItemProxy item = (ItemProxy) bean;
+        Item item = (Item) bean;
         try {
             Thread.sleep(500);
 

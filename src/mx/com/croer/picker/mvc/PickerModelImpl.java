@@ -151,7 +151,7 @@ public class PickerModelImpl extends PickerModel {
 
         if (propertyName.equals("entry")) {
             SimpleEntry<Object, Icon> entry = (SimpleEntry<Object, Icon>) evt.getNewValue();
-            ItemProxy key = (ItemProxy) entry.getKey();
+            Item key = (Item) entry.getKey();
 
             Icon value = entry.getValue();
 
@@ -160,7 +160,7 @@ public class PickerModelImpl extends PickerModel {
                 throw new IllegalStateException("Abnormal ending - Thread logic is wrong");
             }
 
-            ItemProxy item = (ItemProxy) resultList.get(index);
+            Item item = (Item) resultList.get(index);
             item.setImage(value);
 
             BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("image", index));

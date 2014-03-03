@@ -12,7 +12,7 @@ import javax.swing.Icon;
  *
  * @author elialva
  */
-public interface ItemProxy {
+public interface Item {
 
     public void setSource(Object source);
 

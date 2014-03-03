@@ -91,7 +91,7 @@ public class PickerView implements BrowseListener {
                         displayPopup(false);
                         controller.makeSelection(list);
                         for (Object object : list) {
-                            ItemProxy item = (ItemProxy) object;
+                            Item item = (Item) object;
                             item.setSelection(null);
                         }
                         e.consume();
@@ -309,7 +309,7 @@ public class PickerView implements BrowseListener {
         int i = table.getSelectedRow();
         i = table.convertRowIndexToModel(i);
 
-        ItemProxy item = (ItemProxy) list.get(i);
+        Item item = (Item) list.get(i);
         i = item.getSelection() == null ? amount == 0 ? 1 : amount : item.getSelection() + amount;
         if (i > 0) {
             item.setSelection(i);

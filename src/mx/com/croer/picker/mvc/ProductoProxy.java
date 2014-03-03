@@ -14,7 +14,7 @@ import javax.swing.Icon;
  *
  * @author elialva
  */
-public class ProductoProxy implements ItemProxy {
+public class ProductoProxy implements Item {
 
     public static final String PROP_SOURCE = "PROP_SOURCE";
     public static final String PROP_ALIGNMENT = "PROP_ALIGNMENT";

@@ -16,22 +16,21 @@ import javax.persistence.SqlResultSetMapping;
  *
  * @author elialva
  */
-@Entity
-@SqlResultSetMapping(name = "CandidateResult",
-        entities = {
-            @EntityResult(entityClass = mx.com.croer.picker.access.Candidate.class, fields = {
-                @FieldResult(name = "idBean", column = "idBean"),
-                @FieldResult(name = "context", column = "contexto")})}
-)
+//@Entity
+//@SqlResultSetMapping(name = "CandidateResult",
+//        entities = {
+//            @EntityResult(entityClass = mx.com.croer.picker.access.Candidate.class, fields = {
+//                @FieldResult(name = "idBean", column = "idBean"),
+//                @FieldResult(name = "context", column = "contexto")})}
+//)
 public class Candidate implements Serializable {
 
     private String context;
-    @Id
+//    @Id
     private Integer idBean;
 
     public void setIdBean(Integer idBean) {
         this.idBean = idBean;
-
     }
 
     public void setContext(String context) {

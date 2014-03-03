@@ -15,7 +15,7 @@ import mx.com.croer.catalogodigital.entities.Producto;
  *
  * @author elialva
  */
-public class MarcaW implements ItemProxy {
+public class MarcaW implements Item {
     private Marca marca;
     private List alignment;
     private String context;
