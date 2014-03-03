@@ -27,15 +27,14 @@ public class Candidate implements Serializable {
 
     private String context;
 //    @Id
-    private Integer idBean;
+    private Object idBean;
 
-    public void setIdBean(Integer idBean) {
+    public void setIdBean(Object idBean) {
         this.idBean = idBean;
     }
 
     public void setContext(String context) {
         this.context = context;
-
     }
 
     public String getContext() {

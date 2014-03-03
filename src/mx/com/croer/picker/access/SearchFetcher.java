@@ -61,7 +61,7 @@ public class SearchFetcher extends JdbcDaoSupport {
         }
     }
 
-    public List<Entry<Candidate, List>> selectedOnes(String[] hints) {
+    private List<Entry<Candidate, List>> selectedOnes(String[] hints) {
         List<Candidate> candidateList = searchCandidates(hints);
         List<Entry<Candidate, List>> selectedList = new ArrayList<>();
 
@@ -113,7 +113,7 @@ public class SearchFetcher extends JdbcDaoSupport {
             for (int i = 0; i < row.length; i++) {
                 switch (i) {
                     case 0:
-                        candidate.setIdBean(new Integer(row[0].toString()));
+                        candidate.setIdBean(row[0]);
                     case 1:
                         candidate.setContext((String) row[1]);
                 }
@@ -187,16 +187,16 @@ public class SearchFetcher extends JdbcDaoSupport {
         return new SimpleEntry(a, b);
     }
 
-    private List<Item> assembleItems(List<Entry<Candidate, List>> selectedList, Class type) {
+    private List<Item> assembleItems(List<Entry<Candidate, List>> selectedList) {
         List<Item> itemList = new ArrayList();
         for (Entry<Candidate, List> entry : selectedList) {
             Candidate candidate = entry.getKey();
             List alignment = entry.getValue();
-            Object item = bf.createBusinessObject(candidate.getIdBean(), type);
-            Item itemProxy = bf.createItem(item);
-            itemProxy.setContext(candidate.getContext());
-            itemProxy.setAlignment(alignment);
-            itemList.add(itemProxy);
+            Object businessObj = bf.createBusinessObject(candidate.getIdBean(), type);
+            Item item = bf.createItem(businessObj);
+            item.setContext(candidate.getContext());
+            item.setAlignment(alignment);
+            itemList.add(item);
         }
         return itemList;
     }
@@ -212,7 +212,7 @@ public class SearchFetcher extends JdbcDaoSupport {
         List<Entry<Candidate, List>> selectedList = selectedOnes(hints);
 
         //Create the items
-        List<Item> assembleItems = assembleItems(selectedList, type);
+        List<Item> assembleItems = assembleItems(selectedList);
 
         return assembleItems;
     }
