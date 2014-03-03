@@ -17,8 +17,8 @@ import javax.swing.Icon;
  */
 public abstract class DataPicker {
 
-    public synchronized List readPage(Object pageHeader) {
-        return createPage(pageHeader);
+    public synchronized List readPage(Object pageHeader, int rows) {
+        return createPage(pageHeader, rows);
     }
 
     public Icon createIcon(Object bean) {
@@ -31,7 +31,7 @@ public abstract class DataPicker {
 
     public abstract int createPageSize();
 
-    public abstract List createPage(Object pageHeader);
+    public abstract List createPage(Object pageHeader, int rows);
 
 }
 

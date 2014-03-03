@@ -12,11 +12,15 @@ import javax.swing.Icon;
  *
  * @author elialva
  */
-public interface Item {
+public interface ItemProxy {
 
     public void setSource(Object source);
 
     public Object getSource();
+    
+    public void setContext (String context);
+
+    public String getContext();
 
     public void setAlignment(List alignment);
 

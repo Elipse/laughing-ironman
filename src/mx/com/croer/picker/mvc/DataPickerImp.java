@@ -30,24 +30,24 @@ public class DataPickerImp extends DataPicker {
     }
 
     @Override
-    public List createPage(Object pageHeader) {
-        System.out.println("pageHEadr " + pageHeader.getClass());
+    public List createPage(Object pageHeader, int rows) {
+//        System.out.println("pageHEadr " + pageHeader.getClass());
         List list = new ArrayList();
-        EntityManagerFactory createEntityManagerFactory2 = Persistence.createEntityManagerFactory("JavaProject1PU2");
-        EntityManager createEntityManager2 = createEntityManagerFactory2.createEntityManager();
-        TypedQuery<Marca> createNamedQuery2 = createEntityManager2.createNamedQuery("Marca.findAll", Marca.class);
-        List<Marca> resultList2 = createNamedQuery2.getResultList();
-        for (Marca marca : resultList2) {
-            System.out.println("Marca " + marca.getDescripcion());
-        }
-
-        EntityManagerFactory createEntityManagerFactory3 = Persistence.createEntityManagerFactory("JavaProject1PU3");
-        EntityManager createEntityManager3 = createEntityManagerFactory3.createEntityManager();
-        TypedQuery<Simigrama> createNamedQuery3 = createEntityManager3.createNamedQuery("Simigrama.findAll", Simigrama.class);
-        List<Simigrama> resultList3 = createNamedQuery3.getResultList();
-        for (Simigrama simigrama : resultList3) {
-            System.out.println("Simigrama " + simigrama.getSimigrama());
-        }
+//        EntityManagerFactory createEntityManagerFactory2 = Persistence.createEntityManagerFactory("JavaProject1PU2");
+//        EntityManager createEntityManager2 = createEntityManagerFactory2.createEntityManager();
+//        TypedQuery<Marca> createNamedQuery2 = createEntityManager2.createNamedQuery("Marca.findAll", Marca.class);
+//        List<Marca> resultList2 = createNamedQuery2.getResultList();
+//        for (Marca marca : resultList2) {
+//            System.out.println("Marca " + marca.getDescripcion());
+//        }
+//
+//        EntityManagerFactory createEntityManagerFactory3 = Persistence.createEntityManagerFactory("JavaProject1PU3");
+//        EntityManager createEntityManager3 = createEntityManagerFactory3.createEntityManager();
+//        TypedQuery<Simigrama> createNamedQuery3 = createEntityManager3.createNamedQuery("Simigrama.findAll", Simigrama.class);
+//        List<Simigrama> resultList3 = createNamedQuery3.getResultList();
+//        for (Simigrama simigrama : resultList3) {
+//            System.out.println("Simigrama " + simigrama.getSimigrama());
+//        }
 
         ProductoSearch p = new ProductoSearch("leche");
         p.setDescripcion("lala");
@@ -78,7 +78,7 @@ public class DataPickerImp extends DataPicker {
 
         Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
 
-        Item item = (Item) bean;
+        ItemProxy item = (ItemProxy) bean;
         try {
             Thread.sleep(500);
 

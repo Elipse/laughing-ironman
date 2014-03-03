@@ -14,7 +14,7 @@ import javax.swing.Icon;
  *
  * @author elialva
  */
-public class ProductoProxy implements Item {
+public class ProductoProxy implements ItemProxy {
 
     public static final String PROP_SOURCE = "PROP_SOURCE";
     public static final String PROP_ALIGNMENT = "PROP_ALIGNMENT";
@@ -130,5 +130,15 @@ public class ProductoProxy implements Item {
     //se requiere para beansbinding
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void setContext(String context) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getContext() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -1,4 +1,4 @@
-           select *
+           select idBean, contexto
 	   from <entity>Busq
 	   where idBean in (
 	    select idBean

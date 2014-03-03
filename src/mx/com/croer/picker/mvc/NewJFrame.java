@@ -36,19 +36,19 @@ public class NewJFrame extends javax.swing.JFrame {
         }
         PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, ProductoSearch.class);
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
-        EntityManagerFactory bean = context.getBean("emf",EntityManagerFactory.class);
+        EntityManagerFactory bean = context.getBean("emf", EntityManagerFactory.class);
         TypedQuery<Marca> createNamedQuery = bean.createEntityManager().createNamedQuery("Marca.findAll", Marca.class);
         List<Marca> resultList = createNamedQuery.getResultList();
         for (Marca marca : resultList) {
             System.out.println("MarcaBySpring " + marca.getDescripcion());
         }
-        
-        EntityManagerFactory bean2 = context.getBean("emfFte",EntityManagerFactory.class);
-        TypedQuery<Simigrama> createNamedQuery2 = bean2.createEntityManager().createNamedQuery("Simigrama.findAll", Simigrama.class);
-        List<Simigrama> resultList2 = createNamedQuery2.getResultList();
-        for (Simigrama simigrama : resultList2) {
-            System.out.println("SimigramaBySpring " + simigrama.getSimigrama());
-        }        
+
+//        EntityManagerFactory bean2 = context.getBean("emfFte", EntityManagerFactory.class);
+//        TypedQuery<Simigrama> createNamedQuery2 = bean2.createEntityManager().createNamedQuery("Simigrama.findAll", Simigrama.class);
+//        List<Simigrama> resultList2 = createNamedQuery2.getResultList();
+//        for (Simigrama simigrama : resultList2) {
+//            System.out.println("SimigramaBySpring " + simigrama.getSimigrama());
+//        }
     }
 
     /**

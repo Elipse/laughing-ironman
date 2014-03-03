@@ -87,7 +87,7 @@ public final class PickerControllerImpl implements PickerController {
         Map<Object, Integer> map = new HashMap<Object, Integer>();
 
         for (Object object : objects) {
-            Item item = (Item) object;
+            ItemProxy item = (ItemProxy) object;
             map.put(item.getSource(), item.getSelection());
         }
 
