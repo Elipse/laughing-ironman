@@ -27,7 +27,6 @@ public class PickerModelImpl extends PickerModel {
     private DataPicker dataPicker;
     private BeanWorker beanWorker = new BeanWorker(null, null, 0, null);
     private IconWorker iconWorker = new IconWorker(null);
-    private CountWorker countWorker = new CountWorker(null, null);
     private final ClassListener classListener = new ClassListener();
     private Object sync;
     private boolean backward;
@@ -105,15 +104,7 @@ public class PickerModelImpl extends PickerModel {
 
         System.out.println("beforeExecute " + beanWorker);
         beanWorker.execute();  //beanWorker ejecuta iconWorker.execute()
-        System.out.println("afterExecute " + beanWorker);
-
-        if (direction == 0) {  //Inicia nueva búsqueda
-            countWorker.cancel(false);
-            countWorker.removePropertyChangeListener(classListener);
-            countWorker = new CountWorker(sync, pageHeader);
-            countWorker.addPropertyChangeListener(classListener);
-            countWorker.execute();
-        }
+        System.out.println("afterExecute " + beanWorker);        
     }
 
     /**
@@ -190,7 +181,7 @@ public class PickerModelImpl extends PickerModel {
         @Override
         protected List doInBackground() throws Exception {
             //Si ocurre una excepcion aqui manda llamar a done de inmediato
-            List o = PickerModelImpl.this.dataPicker.readPage(pageHeader, rows + 1);  //dataPicker sync or local variables always
+            List o = PickerModelImpl.this.dataPicker.readPage(pageHeader);  //dataPicker sync or local variables always
             return o;
         }
 
@@ -270,38 +261,6 @@ public class PickerModelImpl extends PickerModel {
             } finally {
                 super.finalize();
             }
-        }
-    }
-
-    private class CountWorker extends SwingWorker<Integer, Void> {
-
-        private final Object sync;
-        private final Object input;
-
-        public CountWorker(Object sync, Object input) {
-            this.sync = sync;
-            this.input = input;
-        }
-
-        @Override
-        protected Integer doInBackground() throws Exception {
-            return PickerModelImpl.this.dataPicker.countRows(input); //dataPicker sync or local variables always
-        }
-
-        @Override
-        protected void done() {
-            if (this.sync != PickerModelImpl.this.sync) { //Si está activa otra lista: termina
-                return;
-            }
-
-            Integer count = new Integer(0);
-            try {
-                count = get();
-            } catch (Exception ex) {
-//                Exceptions.printStackTrace(ex);
-            }
-
-            firePropertyChange("count", new Integer(0), count);
         }
     }
 

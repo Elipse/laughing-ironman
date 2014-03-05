@@ -17,21 +17,17 @@ import javax.swing.Icon;
  */
 public abstract class DataPicker {
 
-    public synchronized List readPage(Object pageHeader, int rows) {
-        return createPage(pageHeader, rows);
+    public synchronized List<Item> readPage(Object pageHeader) {
+        return createPage(pageHeader);
     }
 
     public Icon createIcon(Object bean) {
         return new MissingItem(Color.yellow);
-    }
-
-    public Integer countRows(Object input) {
-        return null;
-    }
+    }    
 
     public abstract int createPageSize();
 
-    public abstract List createPage(Object pageHeader, int rows);
+    public abstract List<Item> createPage(Object pageHeader);
 
 }
 

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -65,27 +66,20 @@ public class SearchFetcher extends JdbcDaoSupport {
         List<Candidate> candidateList = searchCandidates(hints);
         List<Entry<Candidate, List>> selectedList = new ArrayList<>();
 
-        //Assess each candidate bean
-        candidates:
+        
+        next_candidate:                 //Assess each candidate bean
         for (Candidate candidate : candidateList) {
             List<Entry<Integer, Integer>> sections = new ArrayList<>();
             StringBuilder context = new StringBuilder(candidate.getContext().toLowerCase());
-            List<XHint> xHintList = extendHints(hints, candidate.getIdBean());
-            //All of hints must be discovered inside the candidate bean's context
-            hints:
-            for (String hint : hints) {
-                for (int i = 0; i < xHintList.size(); i++) {
-                    XHint xHint = xHintList.get(i);
-                    System.out.println(">>> Candidate " + candidate.getContext() + "-" + hint + "-" + xHint.getOrtograma());
-                    System.out.println("Context. " + context);
-                    if (xHint.getHint().equals(hint)) {
-                        sections.add(calculateSection(context, xHint)); //Calcula sección para añadirla a delimitOk
-                        xHintList.remove(i);                            //Se remueve para asegurar la concordancia en número para los numegramas duplicados
-                        System.out.println("Context, " + context);
-                        continue hints;                                 //Continua con el siguiente numegrama
-                    }
+            System.out.println(">>>Candidate " + candidate.getContext());
+            for (String hint : hints) { //All of hints must be discovered inside the candidate bean's context
+                System.out.println(">>> >Busca " + hint);
+                List<XHint> xHintList = extendHints(hint, candidate.getIdBean()); //¿Deberia bastar xHintList.isEmpty para next_candidate?
+                Entry<Integer, Integer> section = calculateSection(context, xHintList);
+                if (section == null) {
+                    continue next_candidate;
                 }
-                continue candidates; //Llego aquí sin encontrar coincidencias, continua con el siguiente candidato
+                sections.add(section);
             }
             selectedList.add(new SimpleEntry(candidate, sections));
         }
@@ -100,8 +94,13 @@ public class SearchFetcher extends JdbcDaoSupport {
             where += like.replaceAll("<numegrama>", hint);
             like = " or s.numegrama like '%<numegrama>%'";
         }
-        String query = CandidateSql.replaceAll("<entity>", type.getSimpleName());
-        query = query.replaceAll("<where>", where).replaceAll("<numOfWords>", hints.length + "");
+
+        System.out.println("getType: " + getType().getSimpleName());
+
+        String query = CandidateSql.
+                replaceAll("<entity>", getType().getSimpleName()).
+                replaceAll("<where>", where).
+                replaceAll("<numOfWords>", hints.length + "");
 
         System.out.println("BEG------------------------");
 
@@ -142,47 +141,64 @@ public class SearchFetcher extends JdbcDaoSupport {
      * @return an List that contains a Map per hint
      */
     //</editor-fold>
-    private List<XHint> extendHints(String[] hints, Object key) {
+    private List<XHint> extendHints(String hint, Object key) {
 
-        String tmpQuery = XHintSql.replaceAll("<entity>", type.getSimpleName());
-        tmpQuery = tmpQuery.replaceAll("<idBean>", key.toString());
+        String tmpQuery = XHintSql.
+                replaceAll("<entity>", getType().getSimpleName()).
+                replaceAll("<idBean>", key.toString());
 
         List<XHint> list = new ArrayList();
-        for (String hint : hints) {
-            List<Map<String, Object>> queryForList = getJdbcTemplate().queryForList(tmpQuery.replaceAll("<hint>", hint));
-            for (Map<String, Object> map : queryForList) {
-                XHint xHint = new XHint();
-                xHint.setHint((String) map.get("hint"));
-                xHint.setNumegrama((String) map.get("numegrama"));
-                xHint.setSimigrama((String) map.get("simigrama"));
-                xHint.setOrtograma((String) map.get("ortograma"));
-                xHint.setAlineacion((String) map.get("alineacion"));
-                list.add(xHint);
-            }
+        List<Map<String, Object>> queryForList = getJdbcTemplate().queryForList(tmpQuery.replaceAll("<hint>", hint));
+        for (Map<String, Object> map : queryForList) {
+            XHint xHint = new XHint();
+            xHint.setHint((String) map.get("hint"));
+            xHint.setNumegrama((String) map.get("numegrama"));
+            xHint.setSimigrama((String) map.get("simigrama"));
+            xHint.setOrtograma((String) map.get("ortograma"));
+            xHint.setAlineacion((String) map.get("alineacion"));
+//            System.out.println("Display xHint " + xHint.getHint() + " " + xHint.getOrtograma());
+            list.add(xHint);
         }
         return list;
     }
 
-    private static Entry<Integer, Integer> calculateSection(StringBuilder contexto, XHint xHint) {
+    private static Entry<Integer, Integer> calculateSection(StringBuilder contexto, List<XHint> xHints) {
 
-        String hint = xHint.getHint();
-        String numegrama = xHint.getNumegrama();
-        String orthogram = xHint.getOrtograma();
-        String alineacion = xHint.getAlineacion();
+        XHint leftXHint = null;
+        int leftPos = contexto.length();
+        for (XHint xHint : xHints) {
+            String orthogram = xHint.getOrtograma();
+            int i = contexto.indexOf(orthogram);
+            if (i >= 0 && i < leftPos) {
+                leftPos = i;
+                leftXHint = xHint;
+            }
 
-        int j = contexto.indexOf(orthogram);
-
-        int i = numegrama.indexOf(hint);
-        if (i < 0 || j < 0) {
-            System.out.println("ABNORMAL ENDING - LOGIC ERROR");
-            System.exit(0);
+            if (i >= 0) {
+                System.out.println(">>> >>Halle:   " + xHint.getHint() + "-" + xHint.getOrtograma());
+            } else {
+                System.out.println(">>> >>NoHalle: " + xHint.getHint() + "-" + xHint.getOrtograma());
+            }
         }
 
-        contexto.replace(j, j + orthogram.length(), StringUtils.repeat(" ", orthogram.length()));
+        if (leftXHint == null) {
+            System.out.println(">>> >>Sin coincidencias.");
+            return null;
+        }
 
-        char[] c = alineacion.substring(i, i + hint.length()).toCharArray();
-        int a = j + c[0];
-        int b = j + c[c.length - 1];
+        System.out.println(">>> >>CoincidenciaX: " + leftXHint.getHint() + "-" + leftXHint.getOrtograma());
+        String hint = leftXHint.getHint();
+        String numegrama = leftXHint.getNumegrama();
+        String orthogram = leftXHint.getOrtograma();
+        String alineacion = leftXHint.getAlineacion();
+
+        int offset = numegrama.indexOf(hint);
+
+        contexto.replace(leftPos, leftPos + orthogram.length(), StringUtils.repeat(" ", orthogram.length()));
+
+        char[] c = alineacion.substring(offset, offset + hint.length()).toCharArray();
+        int a = leftPos + c[0];
+        int b = leftPos + c[c.length - 1];
 
         return new SimpleEntry(a, b);
     }
@@ -192,7 +208,7 @@ public class SearchFetcher extends JdbcDaoSupport {
         for (Entry<Candidate, List> entry : selectedList) {
             Candidate candidate = entry.getKey();
             List alignment = entry.getValue();
-            Object businessObj = bf.createBusinessObject(candidate.getIdBean(), type);
+            Object businessObj = bf.createBusinessObject(candidate.getIdBean(), getType());
             Item item = bf.createItem(businessObj);
             item.setContext(candidate.getContext());
             item.setAlignment(alignment);
@@ -201,9 +217,9 @@ public class SearchFetcher extends JdbcDaoSupport {
         return itemList;
     }
 
-    public List<Item> getPage(String input, Class type) {
+    public List<Item> getPage(String input) {
 
-        this.type = type;
+        System.out.println("iputtttt " + input);
 
         //Prepara, Valida y Divide la entrada
         String[] hints = StringUtils.split(input);
@@ -217,22 +233,42 @@ public class SearchFetcher extends JdbcDaoSupport {
         return assembleItems;
     }
 
+//<editor-fold defaultstate="collapsed" desc="comment">
+    /**
+     * @return the type
+     */
+    public Class getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(Class type) {
+        this.type = type;
+    }
+//</editor-fold>
+
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
         SearchFetcher searchFetcher = (SearchFetcher) context.getBean("searchFetcher");
+        searchFetcher.setType(Marca.class);
 
-        List<Item> page2 = searchFetcher.getPage("72 ", Marca.class);
+        List<Item> page2 = searchFetcher.getPage("72 ");
         for (Item itemProxy : page2) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
-        List<Item> page = searchFetcher.getPage("2  ", Producto.class);
+
+        searchFetcher.setType(Producto.class);
+        List<Item> page = searchFetcher.getPage("2  ");
         for (Item itemProxy : page) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
 
-        List<Item> page3 = searchFetcher.getPage("62 8 ", Producto.class);
+        List<Item> page3 = searchFetcher.getPage("62 6 ");
         for (Item itemProxy : page3) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
     }
+
 }

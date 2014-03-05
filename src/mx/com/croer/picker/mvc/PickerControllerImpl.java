@@ -32,8 +32,10 @@ public final class PickerControllerImpl implements PickerController {
 
     protected DataPicker createDataPicker(Class clas) {
         switch (clas.getSimpleName()) {
-            case "ProductoSearch":
-                return new DataPickerImp();
+            case "Producto":
+                DataPickerImp dp=new DataPickerImp();
+                dp.setType(clas);                
+                return dp;
             default:
                 break;
         }
@@ -49,8 +51,8 @@ public final class PickerControllerImpl implements PickerController {
     protected List<BeanColumn> createNet(Class clas) {
         List<BeanColumn> beanColumnList = new ArrayList<>();
 
-        beanColumnList.add(new BeanColumn("idproducto", "Desc", String.class, null, true, 100, false));
-//        beanColumnList.add(new BeanColumn("descripcion", "Mark", String.class, null, true, 100, false));
+//        beanColumnList.add(new BeanColumn("idproducto", "Desc", String.class, null, true, 100, false));
+        beanColumnList.add(new BeanColumn("context", "Mark", String.class, null, true, 100, false));
         beanColumnList.add(new BeanColumn("image", "Imagen", Icon.class, null, true, 64, false));
         beanColumnList.add(new BeanColumn("selection", "#", Integer.class, null, true, 15, false));
         return beanColumnList;

@@ -32,8 +32,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Marca.findByIdMarca", query = "SELECT m FROM Marca m WHERE m.idMarca = :idMarca"),
     @NamedQuery(name = "Marca.findByDescripcion", query = "SELECT m FROM Marca m WHERE m.descripcion = :descripcion")})
 public class Marca implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "marcaidMarca")
-    private Collection<Producto> productoCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -41,6 +39,8 @@ public class Marca implements Serializable {
     private Integer idMarca;
     @Column(name = "descripcion")
     private String descripcion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "marcaidMarca")
+    private Collection<Producto> productoCollection;
 
     public Marca() {
     }
@@ -63,6 +63,15 @@ public class Marca implements Serializable {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    @XmlTransient
+    public Collection<Producto> getProductoCollection() {
+        return productoCollection;
+    }
+
+    public void setProductoCollection(Collection<Producto> productoCollection) {
+        this.productoCollection = productoCollection;
     }
 
     @Override
@@ -88,15 +97,6 @@ public class Marca implements Serializable {
     @Override
     public String toString() {
         return "mx.com.croer.catalogodigital.entities.Marca[ idMarca=" + idMarca + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Producto> getProductoCollection() {
-        return productoCollection;
-    }
-
-    public void setProductoCollection(Collection<Producto> productoCollection) {
-        this.productoCollection = productoCollection;
     }
     
 }

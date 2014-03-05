@@ -14,6 +14,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import mx.com.croer.busqueda.entities.Simigrama;
 import mx.com.croer.catalogodigital.entities.Marca;
+import mx.com.croer.catalogodigital.entities.Producto;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -28,13 +29,8 @@ public class NewJFrame extends javax.swing.JFrame {
      */
     public NewJFrame() throws IOException {
         initComponents();
-        String path = "C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Buscq";
 
-        List<String> readLines = FileUtils.readLines(new File(path));
-        for (String string : readLines) {
-            System.out.println("string " + string);
-        }
-        PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, ProductoSearch.class);
+        PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, Producto.class);
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
         EntityManagerFactory bean = context.getBean("emf", EntityManagerFactory.class);
         TypedQuery<Marca> createNamedQuery = bean.createEntityManager().createNamedQuery("Marca.findAll", Marca.class);
