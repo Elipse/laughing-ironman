@@ -5,6 +5,7 @@
  */
 package mx.com.croer.picker.mvc;
 
+import mx.com.croer.entities.proxy.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +33,15 @@ public final class PickerControllerImpl implements PickerController {
 
     protected DataPicker createDataPicker(Class clas) {
         switch (clas.getSimpleName()) {
-            case "Producto":
+            case "X":
+//                DataPickerImp dp=new DataPickerImp();
+//                dp.setType(clas);                
+//                return dp;
+                break;
+            default:
                 DataPickerImp dp=new DataPickerImp();
                 dp.setType(clas);                
                 return dp;
-            default:
-                break;
         }
         return null;
     }
@@ -53,6 +57,7 @@ public final class PickerControllerImpl implements PickerController {
 
 //        beanColumnList.add(new BeanColumn("idproducto", "Desc", String.class, null, true, 100, false));
         beanColumnList.add(new BeanColumn("context", "Mark", String.class, null, true, 100, false));
+        beanColumnList.add(new BeanColumn("alignment", "Alinea", List.class, null, true, 64, false));
         beanColumnList.add(new BeanColumn("image", "Imagen", Icon.class, null, true, 64, false));
         beanColumnList.add(new BeanColumn("selection", "#", Integer.class, null, true, 15, false));
         return beanColumnList;

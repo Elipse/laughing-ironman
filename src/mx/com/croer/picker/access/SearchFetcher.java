@@ -18,9 +18,9 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import mx.com.croer.catalogodigital.entities.Marca;
-import mx.com.croer.catalogodigital.entities.Producto;
-import mx.com.croer.picker.mvc.Item;
+import mx.com.croer.entities.catalogodigital.Marca;
+import mx.com.croer.entities.catalogodigital.Producto;
+import mx.com.croer.entities.proxy.Item;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -265,7 +265,7 @@ public class SearchFetcher extends JdbcDaoSupport {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
 
-        List<Item> page3 = searchFetcher.getPage("62 6 ");
+        List<Item> page3 = searchFetcher.getPage("62 8 ");
         for (Item itemProxy : page3) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }

@@ -2,9 +2,9 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="JavaProject1PU2" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>mx.com.croer.catalogodigital.entities.Marca</class>
-    <class>mx.com.croer.catalogodigital.entities.Producto</class>
-    <class>mx.com.croer.catalogodigital.entities.Unidad</class>
+    <class>mx.com.croer.entities.catalogodigital.Producto</class>
+    <class>mx.com.croer.entities.catalogodigital.Unidad</class>
+    <class>mx.com.croer.entities.catalogodigital.Marca</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/catalogodigital?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="root"/>
@@ -16,9 +16,9 @@
   </persistence-unit>
   <persistence-unit name="JavaProject1PU3" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>mx.com.croer.busqueda.entities.Simigrama</class>
-    <class>mx.com.croer.busqueda.entities.Productobusq</class>
     <class>mx.com.croer.picker.access.Chetos</class>
+    <class>mx.com.croer.entities.busqueda.Productobusq</class>
+    <class>mx.com.croer.entities.busqueda.Simigrama</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/busqueda?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="root"/>

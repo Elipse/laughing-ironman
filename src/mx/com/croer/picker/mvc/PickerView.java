@@ -5,6 +5,7 @@
  */
 package mx.com.croer.picker.mvc;
 
+import mx.com.croer.entities.proxy.Item;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;

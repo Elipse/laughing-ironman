@@ -12,9 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
-import mx.com.croer.busqueda.entities.Simigrama;
-import mx.com.croer.catalogodigital.entities.Marca;
-import mx.com.croer.catalogodigital.entities.Producto;
+import mx.com.croer.entities.busqueda.Simigrama;
+import mx.com.croer.entities.catalogodigital.Marca;
+import mx.com.croer.entities.catalogodigital.Producto;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

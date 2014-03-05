@@ -4,6 +4,7 @@
  */
 package mx.com.croer.picker.mvc;
 
+import mx.com.croer.entities.proxy.Item;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;

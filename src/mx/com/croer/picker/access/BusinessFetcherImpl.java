@@ -8,11 +8,11 @@ package mx.com.croer.picker.access;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import mx.com.croer.catalogodigital.entities.Marca;
-import mx.com.croer.catalogodigital.entities.Producto;
-import mx.com.croer.picker.mvc.Item;
-import mx.com.croer.picker.mvc.MarcaW;
-import mx.com.croer.picker.mvc.ProductoW;
+import mx.com.croer.entities.catalogodigital.Marca;
+import mx.com.croer.entities.catalogodigital.Producto;
+import mx.com.croer.entities.proxy.Item;
+import mx.com.croer.entities.proxy.MarcaW;
+import mx.com.croer.entities.proxy.ProductoW;
 
 public class BusinessFetcherImpl implements BusinessFetcher {
 

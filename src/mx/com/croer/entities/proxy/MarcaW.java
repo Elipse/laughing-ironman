@@ -3,38 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.com.croer.picker.mvc;
+package mx.com.croer.entities.proxy;
 
+import mx.com.croer.entities.proxy.Item;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 import javax.swing.Icon;
-import mx.com.croer.catalogodigital.entities.Producto;
+import mx.com.croer.entities.catalogodigital.Marca;
+import mx.com.croer.entities.catalogodigital.Producto;
 
 /**
  *
  * @author elialva
  */
-public class ProductoW implements Item {
+public class MarcaW implements Item {
 
     public static final String PROP_SOURCE = "PROP_SOURCE";
     public static final String PROP_ALIGNMENT = "PROP_ALIGNMENT";
     public static final String PROP_IMAGE = "image";
     public static final String PROP_SELECTION = "selection";
-    private Producto source;
+    private Marca source;
     private List alignment;
     private Icon image;
     private Integer selection;
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private String context;
 
-    public ProductoW(Producto producto) {
+    public MarcaW(Marca marca) {
 //        super(producto.getIdproducto());
-        System.out.println("PRODWW " + producto.getDescripcion());
-        this.source = producto;
+        System.out.println("PRODWW " + marca.getDescripcion());
+        this.source = marca;
     }
-    
-    
 
     /**
      * @return the source
@@ -50,7 +50,7 @@ public class ProductoW implements Item {
     @Override
     public void setSource(Object source) {
         java.lang.Object oldSource = this.source;
-        this.source = (Producto) source;
+        this.source = (Marca) source;
         propertyChangeSupport.firePropertyChange(PROP_SOURCE, oldSource, source);
     }
 
@@ -109,10 +109,10 @@ public class ProductoW implements Item {
     }
 
 //    @Override
-    public Integer getIdproducto() {
-        return source.getIdProducto();
+    public Integer getIdMarca() {
+        return source.getIdMarca();
     }
-    
+
 //    @Override
     public void setDescripcion(String descripcion) {
         String oldDescripcion = source.getDescripcion();

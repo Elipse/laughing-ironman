@@ -5,7 +5,7 @@
  */
 package mx.com.croer.picker.access;
 
-import mx.com.croer.picker.mvc.Item;
+import mx.com.croer.entities.proxy.Item;
 
 /**
  *

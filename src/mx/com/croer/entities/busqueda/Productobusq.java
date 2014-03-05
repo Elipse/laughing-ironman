@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package mx.com.croer.busqueda.entities;
+package mx.com.croer.entities.busqueda;
 
 import java.io.Serializable;
 import javax.persistence.Basic;

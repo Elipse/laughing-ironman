@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package mx.com.croer.catalogodigital.entities;
+package mx.com.croer.entities.catalogodigital;
 
 import java.io.Serializable;
 import java.util.Collection;

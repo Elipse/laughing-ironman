@@ -4,6 +4,7 @@
  */
 package mx.com.croer.picker.mvc;
 
+import mx.com.croer.entities.proxy.Item;
 import java.beans.*;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
