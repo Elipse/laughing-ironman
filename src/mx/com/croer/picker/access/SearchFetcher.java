@@ -199,8 +199,10 @@ public class SearchFetcher extends JdbcDaoSupport {
         char[] c = alineacion.substring(offset, offset + hint.length()).toCharArray();
         int a = leftPos + c[0];
         int b = leftPos + c[c.length - 1];
+        
+//        new SimpleEntry(orthopos + inklpos, end - begin + 1);
 
-        return new SimpleEntry(a, b);
+        return new SimpleEntry(a, b - a + 1);
     }
 
     private List<Item> assembleItems(List<Entry<Candidate, List>> selectedList) {

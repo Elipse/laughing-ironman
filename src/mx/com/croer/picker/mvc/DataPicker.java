@@ -24,38 +24,38 @@ public abstract class DataPicker {
 
     public Icon createIcon(Object bean) {
         return new MissingItem(Color.yellow);
-    }    
+    }
 
     public abstract int createPageSize();
 
     public abstract List<Item> createPage(Object pageHeader);
 
-}
+    private class MissingItem implements Icon {
 
-class MissingItem implements Icon {
+        Color color;
 
-    Color color;
+        public MissingItem(Color color) {
+            this.color = color;
+        }
 
-    public MissingItem(Color color) {
-        this.color = color;
-    }
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Color oldColor = g.getColor();
+            g.setColor(color);
+            g.fill3DRect(x, y, getIconWidth(), getIconHeight(), true);
+            g.setColor(oldColor);
+        }
 
-    @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-        Color oldColor = g.getColor();
-        g.setColor(color);
-        g.fill3DRect(x, y, getIconWidth(), getIconHeight(), true);
-        g.setColor(oldColor);
-    }
+        @Override
+        public int getIconWidth() {
+            return 12;
+        }
 
-    @Override
-    public int getIconWidth() {
-        return 12;
-    }
+        @Override
+        public int getIconHeight() {
+            return 12;
+        }
 
-    @Override
-    public int getIconHeight() {
-        return 12;
     }
 
 }

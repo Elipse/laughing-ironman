@@ -6,18 +6,9 @@
 package mx.com.croer.picker.mvc;
 
 import mx.com.croer.entities.proxy.Item;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import mx.com.croer.entities.catalogodigital.Marca;
-import mx.com.croer.entities.catalogodigital.Producto;
 import mx.com.croer.picker.access.SearchFetcher;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

@@ -48,13 +48,7 @@ public class SimpleTableDemo extends JPanel {
         table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 //        table.setFillsViewportHeight(true);
 
-        if (DEBUG) {
-            table.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    printDebugData(table);
-                }
-            });
-        }
+        
 
         //Create the scroll pane and add the table to it.
         JScrollPane scrollPane = new JScrollPane(table);
@@ -74,21 +68,7 @@ defRender.getTableCellRendererComponent(table, "Huml", isSelected, false,
                 cellRenderer.setBackground(Color.blue);
     }
 
-    private void printDebugData(JTable table) {
-        int numRows = table.getRowCount();
-        int numCols = table.getColumnCount();
-        javax.swing.table.TableModel model = table.getModel();
 
-        System.out.println("Value of data: ");
-        for (int i=0; i < numRows; i++) {
-            System.out.print("    row " + i + ":");
-            for (int j=0; j < numCols; j++) {
-                System.out.print("  " + model.getValueAt(i, j));
-            }
-            System.out.println();
-        }
-        System.out.println("--------------------------");
-    }
 
     /**
      * Create the GUI and show it.  For thread safety,

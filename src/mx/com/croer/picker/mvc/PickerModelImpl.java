@@ -94,7 +94,7 @@ public class PickerModelImpl extends PickerModel {
         beanWorker.removePropertyChangeListener(classListener);
 
         pageNumber += direction;
-        setBackward(pageNumber == 1 ? false : true);
+        setBackward((pageNumber != 1));
         Object pageHeader = listPageHeader.get(pageNumber - 1);
 
         iconWorker = new IconWorker(sync);
