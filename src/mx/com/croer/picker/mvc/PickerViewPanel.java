@@ -84,9 +84,9 @@ public class PickerViewPanel extends javax.swing.JPanel {
         jTable1.setEnabled(false);
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("U");
+        jButton1.setText("F");
 
-        jButton2.setText("D");
+        jButton2.setText("B");
 
         jLabel1.setText("No hay registros");
 
@@ -101,19 +101,18 @@ public class PickerViewPanel extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -170,9 +169,9 @@ public class PickerViewPanel extends javax.swing.JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == jButton1) {
-                firePropertyChange("UP", "", ".");
-            } else {
                 firePropertyChange("DOWN", "", ".");
+            } else {
+                firePropertyChange("UP", "", ".");
             }
         }
     }

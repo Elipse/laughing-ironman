@@ -71,9 +71,9 @@ public class SearchFetcher extends JdbcDaoSupport {
         for (Candidate candidate : candidateList) {
             List<Entry<Integer, Integer>> sections = new ArrayList<>();
             StringBuilder context = new StringBuilder(candidate.getContext().toLowerCase());
-            System.out.println(">>>Candidate " + candidate.getContext());
+//            System.out.println(">>>Candidate " + candidate.getContext());
             for (String hint : hints) { //All of hints must be discovered inside the candidate bean's context
-                System.out.println(">>> >Busca " + hint);
+//                System.out.println(">>> >Busca " + hint);
                 List<XHint> xHintList = extendHints(hint, candidate.getIdBean()); //¿Deberia bastar xHintList.isEmpty para next_candidate?
                 Entry<Integer, Integer> section = calculateSection(context, xHintList);
                 if (section == null) {
@@ -122,7 +122,7 @@ public class SearchFetcher extends JdbcDaoSupport {
 //        Query q = em.createNativeQuery(query, "CandidateResult"); //Manejar paginación aqui
 //        List<Candidate> list = q.getResultList();
         for (Candidate candidate : list) {
-            System.out.println("CanditateMOOF " + candidate + " - " + candidate.getContext() + candidate.getIdBean());
+//            System.out.println("CanditateMOOF " + candidate + " - " + candidate.getContext() + candidate.getIdBean());
         }
         System.out.println("END------------------------");
 
@@ -175,18 +175,18 @@ public class SearchFetcher extends JdbcDaoSupport {
             }
 
             if (i >= 0) {
-                System.out.println(">>> >>Halle:   " + xHint.getHint() + "-" + xHint.getOrtograma());
+//                System.out.println(">>> >>Halle:   " + xHint.getHint() + "-" + xHint.getOrtograma());
             } else {
-                System.out.println(">>> >>NoHalle: " + xHint.getHint() + "-" + xHint.getOrtograma());
+//                System.out.println(">>> >>NoHalle: " + xHint.getHint() + "-" + xHint.getOrtograma());
             }
         }
 
         if (leftXHint == null) {
-            System.out.println(">>> >>Sin coincidencias.");
+//            System.out.println(">>> >>Sin coincidencias.");
             return null;
         }
 
-        System.out.println(">>> >>CoincidenciaX: " + leftXHint.getHint() + "-" + leftXHint.getOrtograma());
+//        System.out.println(">>> >>CoincidenciaX: " + leftXHint.getHint() + "-" + leftXHint.getOrtograma());
         String hint = leftXHint.getHint();
         String numegrama = leftXHint.getNumegrama();
         String orthogram = leftXHint.getOrtograma();

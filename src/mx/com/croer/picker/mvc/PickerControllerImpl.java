@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.JTextComponent;
 
@@ -81,14 +80,16 @@ public final class PickerControllerImpl implements PickerController {
 
     @Override
     public void forward() {
-        model.forward();
-        view.startProgess();
+        if (model.forward()) {
+            view.startProgess();
+        }
     }
 
     @Override
     public void backward() {
-        model.backward();
-        view.startProgess();
+        if (model.backward()) {
+            view.startProgess();
+        }
     }
 
     @Override
@@ -127,7 +128,6 @@ public final class PickerControllerImpl implements PickerController {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             int rowModel = table.convertRowIndexToModel(row);
             int columnCount = table.getModel().getColumnCount();
-            System.out.println("comddddd " + columnCount);
             List<AbstractMap.SimpleEntry<Integer, Integer>> alignment = null;
 
             for (int i = 0; i < columnCount; i++) {
@@ -183,7 +183,6 @@ public final class PickerControllerImpl implements PickerController {
                 String[] split = color_pos.split(":");
                 int begin = Integer.parseInt(split[0]);
                 int end = Integer.parseInt(split[1]);
-                System.out.println("bendd " + begin + " end " + end);
                 String subText = text.substring(begin, begin + end);
                 String colorString = color.replaceAll("#colorname#", split[2]).replaceAll("#text#", subText);
                 htmlText += text.substring(ind, begin) + colorString;

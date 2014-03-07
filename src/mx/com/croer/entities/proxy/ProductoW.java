@@ -31,7 +31,6 @@ public class ProductoW implements Item {
 
     public ProductoW(Producto producto) {
 //        super(producto.getIdproducto());
-        System.out.println("PRODWW " + producto.getDescripcion());
         this.source = producto;
     }
     
@@ -146,5 +145,25 @@ public class ProductoW implements Item {
     @Override
     public String getContext() {
         return this.context;
+    }
+    
+   
+
+    @Override
+    public String toString() {
+        return source.getDescripcion();
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof ProductoW)) {
+            return false;
+        }
+        ProductoW other = (ProductoW) object;
+        if ((this.source == null && other.source != null) || (this.source != null && !this.source.equals(other.source))) {
+            return false;
+        }
+        return true;
     }
 }

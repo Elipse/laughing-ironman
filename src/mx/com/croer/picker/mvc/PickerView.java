@@ -11,25 +11,20 @@ import java.awt.Rectangle;
 import mx.com.croer.entities.proxy.Item;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
-import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
@@ -80,6 +75,8 @@ public class PickerView implements BrowseListener, ListSelectionListener {
             StyleConstants.setBold(styles[i], true);
         }
     }
+    private boolean backward;
+    private boolean forward;
 
     public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> crisscross) {
         this.textComponent = textComponent;
@@ -189,7 +186,6 @@ public class PickerView implements BrowseListener, ListSelectionListener {
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_DOWN:
                         this.controller.fetch(this.textComponent.getText()); //si se canceló empieza desde el inicio
-                        list.clear();
                         break;
                 }
             }
@@ -198,7 +194,6 @@ public class PickerView implements BrowseListener, ListSelectionListener {
 
     private void documentChangeInTextComponent(DocumentEvent e) {
         this.controller.fetch(this.textComponent.getText());
-        list.clear();
         colorStyledDocument((DefaultStyledDocument) e.getDocument());
     }
 
@@ -233,9 +228,14 @@ public class PickerView implements BrowseListener, ListSelectionListener {
             case "list":
                 System.out.println("Lops " + value);
                 list.addAll((List) value);
-                count = 0;
-                panel.setProgress(count);
-                panel.setMessage("Listando...");
+                if (list.size() > 0) {
+                    count = 0;
+                    panel.setProgress(count);
+                    panel.setMessage("Listando...");
+                } else {
+                    panel.setProgress(100);
+                    panel.setMessage("No hay registros");
+                }
                 break;
             case "image":
                 double p = ((++count + 0.0) / list.size()) * 100;
@@ -246,9 +246,11 @@ public class PickerView implements BrowseListener, ListSelectionListener {
                 break;
             case "backward":
                 panel.setEnableBackward((boolean) value);
+                backward = (boolean) value;
                 break;
             case "forward":
                 panel.setEnableForward((boolean) value);
+                forward = (boolean) value;
                 break;
             default:
                 throw new AssertionError();
@@ -257,7 +259,7 @@ public class PickerView implements BrowseListener, ListSelectionListener {
 
     public void colorStyledDocument(final DefaultStyledDocument document) {
         class Hole {
-            
+
         }
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -334,6 +336,7 @@ public class PickerView implements BrowseListener, ListSelectionListener {
 
     public void startProgess() {
         this.position = -1;
+        list.clear();
         panel.setProgress(true);
         panel.setMessage("Buscando...");
     }

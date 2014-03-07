@@ -5,17 +5,14 @@
  */
 package mx.com.croer.picker.mvc;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
-import mx.com.croer.entities.busqueda.Simigrama;
 import mx.com.croer.entities.catalogodigital.Marca;
 import mx.com.croer.entities.catalogodigital.Producto;
-import org.apache.commons.io.FileUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**

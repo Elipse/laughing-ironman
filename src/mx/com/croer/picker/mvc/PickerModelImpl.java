@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.SwingWorker;
-//import org.openide.util.Exceptions;
 
 /**
  *
@@ -54,6 +53,7 @@ public class PickerModelImpl extends PickerModel {
         pageSize = dataPicker.createPageSize();
         pageNumber = 1;
         listPageHeader = new ArrayList();
+        System.out.println("Pushing..." + input);
         listPageHeader.add(input);
         setForward(false);
         setBackward(false);
@@ -61,19 +61,24 @@ public class PickerModelImpl extends PickerModel {
     }
 
     @Override
-    public void forward() {
+    public boolean forward() {
+        System.out.println("forward " + forward);
         if (!forward) {
-            return;
+            return false;
         }
+        setForward(false); //Se deshabilita el avance hasta que termine o se cancele la búsqueda
         displayPage(+1);
+        return true;
     }
 
     @Override
-    public void backward() {
+    public boolean backward() {
+        System.out.println("backward " + backward);
         if (!backward) {
-            return;
+            return false;
         }
         displayPage(-1);
+        return true;
     }
 
     @Override
@@ -94,18 +99,20 @@ public class PickerModelImpl extends PickerModel {
         beanWorker.removePropertyChangeListener(classListener);
 
         pageNumber += direction;
+        System.out.println("pageNumber " + pageNumber + "-" + direction);
+        System.out.println("listPageHeader " + listPageHeader);
         setBackward((pageNumber != 1));
-        Object pageHeader = listPageHeader.get(pageNumber - 1);
+        Object pageHeader = listPageHeader.get(pageNumber - 1);  //Da por echo q la otra búsqueda terminó
 
         iconWorker = new IconWorker(sync);
         iconWorker.addPropertyChangeListener(classListener);
 
-        beanWorker = new BeanWorker(sync, pageHeader, pageSize + 1, iconWorker);  //se agrega a constr para no hacer referencias a PickerModelImpl
+        beanWorker = new BeanWorker(sync, pageHeader, pageNumber, iconWorker);  //se agrega a constr para no hacer referencias a PickerModelImpl
         beanWorker.addPropertyChangeListener(classListener);
 
         System.out.println("beforeExecute " + beanWorker);
         beanWorker.execute();  //beanWorker ejecuta iconWorker.execute()
-        System.out.println("afterExecute " + beanWorker);        
+        System.out.println("afterExecute " + beanWorker);
     }
 
     /**
@@ -114,7 +121,6 @@ public class PickerModelImpl extends PickerModel {
     private void setBackward(boolean backward) {
         boolean oldValue = this.backward;
         this.backward = backward;
-//        propertySupport.firePropertyChange("backward", oldValue, this.backward);
         fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("backward", backward)));
     }
 
@@ -124,7 +130,6 @@ public class PickerModelImpl extends PickerModel {
     private void setForward(boolean forward) {
         boolean oldValue = this.forward;
         this.forward = forward;
-//        propertySupport.firePropertyChange("forward", oldValue, this.forward);
         fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("forward", forward)));
     }
 
@@ -133,10 +138,6 @@ public class PickerModelImpl extends PickerModel {
 
         if (propertyName.equals("resultList")) {
             resultList = (List) evt.getNewValue();
-            setForward(resultList.size() > pageSize);
-            if (resultList.size() > pageSize && pageNumber > listPageHeader.size()) {
-                listPageHeader.add(resultList.get(pageSize + 1));
-            }
             BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("list", resultList));
             fireSearchPerformed(e);
         }
@@ -158,23 +159,19 @@ public class PickerModelImpl extends PickerModel {
             BrowseEvent e = new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("image", index));
             fireSearchPerformed(e);
         }
-
-        if (propertyName.equals("progress") || propertyName.equals("count")) {
-            propertySupport.firePropertyChange(evt);
-        }
     }
 
     private class BeanWorker extends SwingWorker<List, Void> {
 
         private final Object sync;
         private final Object pageHeader;
-        private final int rows;
+        private final int pageNumber;
         private final IconWorker iconWorker;
 
-        public BeanWorker(Object sync, Object pageHeader, int rows, IconWorker iconWorker) {
+        public BeanWorker(Object sync, Object pageHeader, int pageNumber, IconWorker iconWorker) {
             this.sync = sync;
             this.pageHeader = pageHeader;
-            this.rows = rows;
+            this.pageNumber = pageNumber;
             this.iconWorker = iconWorker;
             System.out.println("Creando BeanWorker");
         }
@@ -182,8 +179,9 @@ public class PickerModelImpl extends PickerModel {
         @Override
         protected List doInBackground() throws Exception {
             //Si ocurre una excepcion aqui manda llamar a done de inmediato
-            List o = PickerModelImpl.this.dataPicker.readPage(pageHeader);  //dataPicker sync or local variables always
-            return o;
+            System.out.println("BeanWorker.pageHeader " + pageHeader);
+            List l = PickerModelImpl.this.dataPicker.readPage(pageHeader, pageNumber);  //dataPicker sync or local variables always
+            return l;
         }
 
         @Override
@@ -197,14 +195,20 @@ public class PickerModelImpl extends PickerModel {
             try {
                 System.out.println("af" + this.getState().name() + " getop " + get());
                 resultList.addAll(get());
+                System.out.println("setForward " + resultList.size() + "*" + pageSize);
+                setForward(resultList.size() > pageSize);
+                if (resultList.size() > pageSize && pageNumber >= listPageHeader.size()) {
+                    listPageHeader.add(resultList.get(pageSize));
+                }
+                int i = pageSize > resultList.size() ? resultList.size() : pageSize;
+                resultList = resultList.subList(0, i);
             } catch (Exception ex) {  //Cacha las excepciones de doInBackground
                 System.out.println("beer" + this.getState().name());
-                System.out.println("exception " + ex);
+                System.out.println("exceptionBeanWorker " + ex);
 ////                Exceptions.printStackTrace(ex);
             }
 
-            resultList = Collections.unmodifiableList(resultList);
-
+            resultList = Collections.unmodifiableList(resultList); //Donde va???
             firePropertyChange("resultList", null, resultList);
 
 //            if (PickerModelImpl.this.dataPicker.hasIcon()) {
@@ -218,7 +222,6 @@ public class PickerModelImpl extends PickerModel {
 
         private final Object sync;
         private List resultList;
-        private int progress;
 
         public IconWorker(Object sync) {
             this.sync = sync;
@@ -238,7 +241,6 @@ public class PickerModelImpl extends PickerModel {
                     break;
                 }
                 publish(entry);
-//                Thread.sleep(2000);
             }
             return null;
         }
@@ -251,7 +253,6 @@ public class PickerModelImpl extends PickerModel {
 
             for (SimpleEntry<Object, Icon> entry : chunks) {
                 firePropertyChange("entry", null, entry);
-                setProgress(++progress / resultList.size());
             }
         }
 

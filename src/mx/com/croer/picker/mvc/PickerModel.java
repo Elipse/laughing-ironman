@@ -23,9 +23,13 @@ public abstract class PickerModel {
 
     public abstract void fetch(Object input);
 
-    public abstract void forward();
+    public abstract boolean forward();
 
-    public abstract void backward();
+//    public abstract boolean isForward();
+
+    public abstract boolean backward();
+
+//    public abstract boolean isBackward();
 
     public abstract void cancel();
 
@@ -44,10 +48,12 @@ public abstract class PickerModel {
         //SearchEvent e = new SearchEvent(this, SearchEvent.SEARCH_PERFORMED, this.message, this.list);
         // Process the listeners last to first, notifying
         // those that are interested in this event
+        System.out.println("HAY ALGUINE " + listeners[1].getClass());
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i] == BrowseListener.class) {
                 ((BrowseListener) listeners[i + 1]).update(e);
             }
         }
+
     }
 }

@@ -32,7 +32,6 @@ public class MarcaW implements Item {
 
     public MarcaW(Marca marca) {
 //        super(producto.getIdproducto());
-        System.out.println("PRODWW " + marca.getDescripcion());
         this.source = marca;
     }
 
