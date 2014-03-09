@@ -4,8 +4,9 @@
  */
 package mx.com.croer.picker.mvc;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import mx.com.croer.entities.proxy.Item;
-import java.beans.*;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,7 +120,6 @@ public class PickerModelImpl extends PickerModel {
      * @param backward the backward to set
      */
     private void setBackward(boolean backward) {
-        boolean oldValue = this.backward;
         this.backward = backward;
         fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("backward", backward)));
     }
@@ -128,7 +128,6 @@ public class PickerModelImpl extends PickerModel {
      * @param forward the forward to set
      */
     private void setForward(boolean forward) {
-        boolean oldValue = this.forward;
         this.forward = forward;
         fireSearchPerformed(new BrowseEvent(this, new SimpleEntry<String, Object>("forward", forward)));
     }
@@ -235,7 +234,7 @@ public class PickerModelImpl extends PickerModel {
         @Override
         protected Void doInBackground() throws Exception {
             for (Object bean : resultList) {
-                Icon icon = PickerModelImpl.this.dataPicker.createIcon(bean);
+                Icon icon = PickerModelImpl.this.dataPicker.readIcon((Item) bean);
                 SimpleEntry<Object, Icon> entry = new SimpleEntry<Object, Icon>(bean, icon);
                 if (isCancelled()) {
                     break;
@@ -271,6 +270,6 @@ public class PickerModelImpl extends PickerModel {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             PickerModelImpl.this.postResults(evt);
-        }
+        }       
     }
 }

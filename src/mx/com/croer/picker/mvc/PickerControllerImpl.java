@@ -19,6 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.JTextComponent;
+import mx.com.croer.picker.access.SearchFetcher;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public final class PickerControllerImpl implements PickerController {
 
@@ -46,7 +48,10 @@ public final class PickerControllerImpl implements PickerController {
 //                return dp;
                 break;
             default:
-                DataPickerImp dp = new DataPickerImp();
+                ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+                SearchFetcher dp = (SearchFetcher) context.getBean("searchFetcher");
+//                DataPickerImp dp = new DataPickerImp();
+//                SearchFetcher dp = new SearchFetcher();
                 dp.setType(clas);
                 return dp;
         }
@@ -101,7 +106,7 @@ public final class PickerControllerImpl implements PickerController {
 
     @Override
     public void makeSelection(List objects) {
-        Map<Object, Integer> map = new HashMap<Object, Integer>();
+        Map<Object, Integer> map = new HashMap<>();
 
         for (Object object : objects) {
             Item item = (Item) object;

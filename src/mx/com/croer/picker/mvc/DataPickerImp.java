@@ -8,7 +8,6 @@ package mx.com.croer.picker.mvc;
 import mx.com.croer.entities.proxy.Item;
 import java.util.List;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import mx.com.croer.picker.access.SearchFetcher;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -20,7 +19,13 @@ public class DataPickerImp extends DataPicker {
 
     private Class type = Object.class;
     private String originalQuery;
-    private int pageSize = 3;
+    private final int pageSize = 3;
+    private final SearchFetcher searchFetcher;
+    
+    public DataPickerImp() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+        searchFetcher = (SearchFetcher) context.getBean("searchFetcher");
+    }
 
     @Override
     public int createPageSize() {
@@ -52,42 +57,33 @@ public class DataPickerImp extends DataPicker {
 //        } catch (InterruptedException ex) {
 //            Logger.getLogger(DataPickerImp.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
-        SearchFetcher searchFetcher = (SearchFetcher) context.getBean("searchFetcher");
         searchFetcher.setType(type);
-        if (pageHeader.getClass() == String.class) {
-            originalQuery = pageHeader.toString();
-        }
 //        
-        List<Item> page = searchFetcher.getPage(originalQuery);
+        List<Item> page = searchFetcher.createPage(pageHeader,0);
 
-        int indexOf = page.indexOf(pageHeader);
-
-        System.out.println("Fetch with " + pageHeader + " * " + pageNumber + "###" + indexOf);
-
-        if (indexOf >= 0) {
-            int i = indexOf + pageSize + 1;
-            if (i > page.size()) {
-                i = page.size();
-            }
-            return page.subList(indexOf, i);
-        } else {
+//        int indexOf = page.indexOf(pageHeader);
+//
+//        System.out.println("Fetch with " + pageHeader + " * " + pageNumber + "###" + indexOf);
+//
+//        if (indexOf >= 0) {
+//            int i = indexOf + pageSize + 1;
+//            if (i > page.size()) {
+//                i = page.size();
+//            }
+//            return page.subList(indexOf, i);
+//        } else {
             return page;
-        }
+//        }
     }
 
     @Override
-    public Icon createIcon(Object bean) {
-
-        Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
-
-        Item item = (Item) bean;
+    public Icon createIcon(Item item) {
 //        try {
 //            Thread.sleep(500);
 //        } catch (InterruptedException ex) {
 //            Logger.getLogger(DataPickerImp.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        return image;
+        return searchFetcher.createIcon(item);
     }
 
     /**

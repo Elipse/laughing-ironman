@@ -61,20 +61,6 @@ public class PickerView implements BrowseListener, ListSelectionListener {
     private final List<BeanColumn> crisscross;
     private int position;
 
-    public final static Style[] styles;
-
-    static {
-        String[] styleNames = new String[]{"magentaStyle", "blueStyle", "redStyle"};
-        styles = new Style[styleNames.length];
-        Color[] colors = new Color[]{Color.magenta, Color.blue, Color.red};
-        StyleContext sc = new StyleContext();
-
-        for (int i = 0; i < styles.length; i++) {
-            styles[i] = sc.addStyle(styleNames[i], sc.getStyle(StyleContext.DEFAULT_STYLE));
-            StyleConstants.setForeground(styles[i], colors[i]);
-            StyleConstants.setBold(styles[i], true);
-        }
-    }
     private boolean backward;
     private boolean forward;
 
@@ -258,9 +244,18 @@ public class PickerView implements BrowseListener, ListSelectionListener {
     }
 
     public void colorStyledDocument(final DefaultStyledDocument document) {
-        class Hole {
 
+        String[] styleNames = new String[]{"magentaStyle", "blueStyle", "redStyle"};
+        final Style[] styles = new Style[styleNames.length];
+        Color[] colors = new Color[]{Color.magenta, Color.blue, Color.red};
+        StyleContext sc = new StyleContext();
+
+        for (int i = 0; i < styles.length; i++) {
+            styles[i] = sc.addStyle(styleNames[i], sc.getStyle(StyleContext.DEFAULT_STYLE));
+            StyleConstants.setForeground(styles[i], colors[i]);
+            StyleConstants.setBold(styles[i], true);
         }
+
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
@@ -281,7 +276,8 @@ public class PickerView implements BrowseListener, ListSelectionListener {
                     document.setCharacterAttributes(start, string.length(), styles[i++ % styles.length], true);
                 }
             }
-        });
+        }
+        );
     }
 
     private void configTable() {
@@ -397,6 +393,7 @@ public class PickerView implements BrowseListener, ListSelectionListener {
 
         Rectangle rect = table.getCellRect(table.getSelectedRow(), table.getSelectedColumn(), true);
         table.scrollRectToVisible(rect);
+
     }
 
     private class MultipleListener extends KeyAdapter implements DocumentListener, FocusListener, PropertyChangeListener {

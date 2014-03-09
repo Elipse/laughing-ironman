@@ -11,10 +11,9 @@ import mx.com.croer.entities.proxy.Item;
  *
  * @author elialva
  */
-public interface BusinessFetcher {
-    
+public interface FactoryFetcher {
+
     public <T extends Object> T createBusinessObject(Object key, Class<T> type);
 
-    public Item createItem(Object item);
-
+    public Item createItem(Object bean);
 }

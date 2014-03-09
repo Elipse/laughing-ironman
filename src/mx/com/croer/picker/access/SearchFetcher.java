@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,26 +17,32 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import mx.com.croer.entities.catalogodigital.Marca;
 import mx.com.croer.entities.catalogodigital.Producto;
 import mx.com.croer.entities.proxy.Item;
+import mx.com.croer.picker.mvc.DataPicker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
  * @author elialva
  */
-public class SearchFetcher extends JdbcDaoSupport {
+public class SearchFetcher extends DataPicker {
 
     @PersistenceContext(unitName = "JavaProject1PU3")
     private EntityManager em;
 
     @Autowired
-    private BusinessFetcher bf;
+    private FactoryFetcher ff;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final String CandidateFile = "C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\access\\CandidateSql.txt";
     private static String CandidateSql = "";
@@ -61,12 +66,13 @@ public class SearchFetcher extends JdbcDaoSupport {
             Logger.getLogger(SearchFetcher.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private String input;
+    private final int pageSize = 3;
 
     private List<Entry<Candidate, List>> selectedOnes(String[] hints) {
         List<Candidate> candidateList = searchCandidates(hints);
         List<Entry<Candidate, List>> selectedList = new ArrayList<>();
 
-        
         next_candidate:                 //Assess each candidate bean
         for (Candidate candidate : candidateList) {
             List<Entry<Integer, Integer>> sections = new ArrayList<>();
@@ -102,7 +108,7 @@ public class SearchFetcher extends JdbcDaoSupport {
                 replaceAll("<where>", where).
                 replaceAll("<numOfWords>", hints.length + "");
 
-        System.out.println("BEG------------------------");
+        System.out.println("BEG------------------------" + query);
 
         Query q = em.createNativeQuery(query).setMaxResults(Integer.MAX_VALUE).setFirstResult(0); //Manejar paginación aqui
         List<Candidate> list = new ArrayList<>();
@@ -148,7 +154,7 @@ public class SearchFetcher extends JdbcDaoSupport {
                 replaceAll("<idBean>", key.toString());
 
         List<XHint> list = new ArrayList();
-        List<Map<String, Object>> queryForList = getJdbcTemplate().queryForList(tmpQuery.replaceAll("<hint>", hint));
+        List<Map<String, Object>> queryForList = jdbcTemplate.queryForList(tmpQuery.replaceAll("<hint>", hint));
         for (Map<String, Object> map : queryForList) {
             XHint xHint = new XHint();
             xHint.setHint((String) map.get("hint"));
@@ -199,9 +205,8 @@ public class SearchFetcher extends JdbcDaoSupport {
         char[] c = alineacion.substring(offset, offset + hint.length()).toCharArray();
         int a = leftPos + c[0];
         int b = leftPos + c[c.length - 1];
-        
-//        new SimpleEntry(orthopos + inklpos, end - begin + 1);
 
+//        new SimpleEntry(orthopos + inklpos, end - begin + 1);
         return new SimpleEntry(a, b - a + 1);
     }
 
@@ -210,8 +215,8 @@ public class SearchFetcher extends JdbcDaoSupport {
         for (Entry<Candidate, List> entry : selectedList) {
             Candidate candidate = entry.getKey();
             List alignment = entry.getValue();
-            Object businessObj = bf.createBusinessObject(candidate.getIdBean(), getType());
-            Item item = bf.createItem(businessObj);
+            Object businessObj = ff.createBusinessObject(candidate.getIdBean(), getType());
+            Item item = ff.createItem(businessObj);
             item.setContext(candidate.getContext());
             item.setAlignment(alignment);
             itemList.add(item);
@@ -219,20 +224,61 @@ public class SearchFetcher extends JdbcDaoSupport {
         return itemList;
     }
 
-    public List<Item> getPage(String input) {
+    @Override
+    public List<Item> createPage(Object pageHeader, int pageNumber) {
+
+        System.out.println("pageClass " + pageHeader.getClass() + " +++ " + this.toString());
+
+        if (pageHeader.getClass() == String.class) {
+            input = pageHeader.toString();
+        }
 
         System.out.println("iputtttt " + input);
 
         //Prepara, Valida y Divide la entrada
         String[] hints = StringUtils.split(input);
 
+        System.out.println("GodinezA " + hints);
         //Select the candidates
         List<Entry<Candidate, List>> selectedList = selectedOnes(hints);
 
+        System.out.println("GodinezB");
         //Create the items
         List<Item> assembleItems = assembleItems(selectedList);
 
-        return assembleItems;
+        System.out.println("GodinezC");
+        int indexOf = assembleItems.indexOf(pageHeader);
+
+        System.out.println("Fetch with " + pageHeader + " * " + pageNumber + "###" + indexOf);
+
+        if (indexOf >= 0) {
+            int i = indexOf + pageSize + 1;
+            if (i > assembleItems.size()) {
+                i = assembleItems.size();
+            }
+            return assembleItems.subList(indexOf, i);
+        } else {
+            return assembleItems;
+        }
+
+//        return assembleItems;
+    }
+
+    @Override
+    public Icon createIcon(Item item) {
+        Icon image = new ImageIcon("C:\\Users\\IBM_ADMIN\\Documents\\@Projects_Eli\\201309 Finder&Getter\\_NBPOtros\\JavaProject1\\src\\mx\\com\\croer\\picker\\mvc\\Banana-icon.png");
+        if (item.getSource().getClass() == Producto.class) {
+            //Baja al directorio y busca con la llave el icono
+        }
+        return image;
+    }
+
+    @Override
+    public int createPageSize() {
+        if (type == Producto.class) {
+            return 3; //TODO probar con 4
+        }
+        return 100000;
     }
 
 //<editor-fold defaultstate="collapsed" desc="comment">
@@ -256,21 +302,20 @@ public class SearchFetcher extends JdbcDaoSupport {
         SearchFetcher searchFetcher = (SearchFetcher) context.getBean("searchFetcher");
         searchFetcher.setType(Marca.class);
 
-        List<Item> page2 = searchFetcher.getPage("72 ");
+        List<Item> page2 = searchFetcher.createPage("72 ", 0);
         for (Item itemProxy : page2) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
 
         searchFetcher.setType(Producto.class);
-        List<Item> page = searchFetcher.getPage("2  ");
+        List<Item> page = searchFetcher.createPage("2  ", 0);
         for (Item itemProxy : page) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
 
-        List<Item> page3 = searchFetcher.getPage("62 8 ");
+        List<Item> page3 = searchFetcher.createPage("62 8 ", 0);
         for (Item itemProxy : page3) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
     }
-
 }

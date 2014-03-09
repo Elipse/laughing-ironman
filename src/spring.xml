@@ -53,11 +53,14 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
         </property>
     </bean>
     
-    <bean id="searchFetcher" class="mx.com.croer.picker.access.SearchFetcher">
-        <property name="dataSource" ref="dataSourceSearch"/>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="dataSourceSearch"/>
     </bean>
     
-    <bean id="cheto" class="mx.com.croer.picker.access.BusinessFetcherImpl">
+    <bean id="searchFetcher" class="mx.com.croer.picker.access.SearchFetcher">
+    </bean>
+    
+    <bean id="cheto" class="mx.com.croer.picker.access.FactoryFetcherImpl">
     </bean>
     
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

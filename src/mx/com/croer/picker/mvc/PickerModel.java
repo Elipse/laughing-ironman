@@ -5,12 +5,8 @@
  */
 package mx.com.croer.picker.mvc;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.List;
 import javax.swing.event.EventListenerList;
-import mx.com.croer.picker.mvc.BrowseEvent;
-import mx.com.croer.picker.mvc.BrowseListener;
 
 /**
  *
@@ -25,11 +21,7 @@ public abstract class PickerModel {
 
     public abstract boolean forward();
 
-//    public abstract boolean isForward();
-
     public abstract boolean backward();
-
-//    public abstract boolean isBackward();
 
     public abstract void cancel();
 
@@ -54,6 +46,5 @@ public abstract class PickerModel {
                 ((BrowseListener) listeners[i + 1]).update(e);
             }
         }
-
     }
 }

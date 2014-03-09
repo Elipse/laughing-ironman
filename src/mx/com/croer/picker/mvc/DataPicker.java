@@ -18,17 +18,21 @@ import javax.swing.Icon;
  */
 public abstract class DataPicker {
 
-    public synchronized List<Item> readPage(Object pageHeader, int pageNumber) {
+    public final synchronized List<Item> readPage(Object pageHeader, int pageNumber) {
         return createPage(pageHeader, pageNumber);
     }
 
-    public Icon createIcon(Object bean) {
+    public abstract List<Item> createPage(Object pageHeader, int pageNumber);
+
+    public final synchronized Icon readIcon(Item item) {
+        return createIcon(item);
+    }
+
+    public Icon createIcon(Item item) {
         return new MissingItem(Color.yellow);
     }
 
     public abstract int createPageSize();
-
-    public abstract List<Item> createPage(Object pageHeader, int pageNumber);
 
     private class MissingItem implements Icon {
 
