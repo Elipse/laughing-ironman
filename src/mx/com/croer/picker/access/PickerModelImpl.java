@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.com.croer.picker.mvc;
+package mx.com.croer.picker.access;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -13,13 +13,18 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.SwingWorker;
+import javax.swing.event.EventListenerList;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
+import mx.com.croer.picker.mvc.BrowseEvent;
+import mx.com.croer.picker.mvc.BrowseListener;
 
 /**
  *
  * @author elialva
  *
  */
-public class PickerModelImpl extends PickerModel {
+public class PickerModelImpl implements PickerModel {
 
     private int pageSize;               //Tamaño de la página
     private List listPageHeader;        //Encabezados de cada página
@@ -33,6 +38,8 @@ public class PickerModelImpl extends PickerModel {
     private boolean backward;
     private boolean forward;
     private List resultList;
+    protected EventListenerList listenerList = new EventListenerList();
+    private int direction;
 
     public PickerModelImpl() {
     }
@@ -53,33 +60,41 @@ public class PickerModelImpl extends PickerModel {
         System.out.println("dataPicker " + dataPicker);
         pageSize = dataPicker.createPageSize();
         pageNumber = 1;
+        fireSearchPerformed(new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("page", pageNumber)));
         listPageHeader = new ArrayList();
         System.out.println("Pushing..." + input);
         listPageHeader.add(input);
         setForward(false);
         setBackward(false);
-        displayPage(+0);
+        displayPage();
     }
 
     @Override
-    public boolean forward() {
+    public int forward() {
         System.out.println("forward " + forward);
-        if (!forward) {
-            return false;
+        if (!forward || pageNumber + 1 > listPageHeader.size()) {
+            return 0;
         }
-        setForward(false); //Se deshabilita el avance hasta que termine o se cancele la búsqueda
-        displayPage(+1);
-        return true;
+        pageNumber++;
+        fireSearchPerformed(new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("page", pageNumber)));
+        setBackward(true);
+        setForward(!(pageNumber == listPageHeader.size()));
+        displayPage();
+        return pageNumber;
     }
 
     @Override
-    public boolean backward() {
+    public int backward() {
         System.out.println("backward " + backward);
-        if (!backward) {
-            return false;
+        if (!backward || pageNumber - 1 < 1) {
+            return 0;
         }
-        displayPage(-1);
-        return true;
+        pageNumber--;
+        fireSearchPerformed(new BrowseEvent(PickerModelImpl.this, new SimpleEntry<String, Object>("page", pageNumber)));
+        setBackward(!(pageNumber == 1));
+        setForward(true);
+        displayPage();
+        return pageNumber;
     }
 
     @Override
@@ -87,7 +102,7 @@ public class PickerModelImpl extends PickerModel {
 
     }
 
-    private void displayPage(int direction) {
+    private void displayPage() {
 
         sync = new Object();  //Cambia el pulso sincronico
 
@@ -99,12 +114,8 @@ public class PickerModelImpl extends PickerModel {
         beanWorker.cancel(false);  //Cancela búsqueda en proceso y se jecuta done()
         beanWorker.removePropertyChangeListener(classListener);
 
-        pageNumber += direction;
-        System.out.println("pageNumber " + pageNumber + "-" + direction);
-        System.out.println("listPageHeader " + listPageHeader);
-        setBackward((pageNumber != 1));
-        Object pageHeader = listPageHeader.get(pageNumber - 1);  //Da por echo q la otra búsqueda terminó
-
+        Object pageHeader = listPageHeader.get(pageNumber - 1);  //TODO WOW Da por echo q la búsqueda previa terminó
+        //No puedo avanzar a la siguiente si no termino la consulta actual
         iconWorker = new IconWorker(sync);
         iconWorker.addPropertyChangeListener(classListener);
 
@@ -114,6 +125,31 @@ public class PickerModelImpl extends PickerModel {
         System.out.println("beforeExecute " + beanWorker);
         beanWorker.execute();  //beanWorker ejecuta iconWorker.execute()
         System.out.println("afterExecute " + beanWorker);
+    }
+
+    @Override
+    public void addBrowseListener(BrowseListener sl) {
+        listenerList.add(BrowseListener.class, sl);
+    }
+
+    @Override
+    public void removeBrowseListener(BrowseListener sl) {
+        listenerList.remove(BrowseListener.class, sl);
+    }
+
+    protected void fireSearchPerformed(BrowseEvent e) {
+        // Guaranteed to return a non-null array
+        Object[] listeners = listenerList.getListenerList();
+
+        //SearchEvent e = new SearchEvent(this, SearchEvent.SEARCH_PERFORMED, this.message, this.list);
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+//        System.out.println("HAY ALGUINE " + listeners[1].getClass());
+        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+            if (listeners[i] == BrowseListener.class) {
+                ((BrowseListener) listeners[i + 1]).update(e);
+            }
+        }
     }
 
     /**
@@ -195,8 +231,11 @@ public class PickerModelImpl extends PickerModel {
                 System.out.println("af" + this.getState().name() + " getop " + get());
                 resultList.addAll(get());
                 System.out.println("setForward " + resultList.size() + "*" + pageSize);
+
+//                setBackward(pageNumber > 1);
                 setForward(resultList.size() > pageSize);
-                if (resultList.size() > pageSize && pageNumber >= listPageHeader.size()) {
+
+                if (resultList.size() > pageSize && pageNumber == listPageHeader.size()) {
                     listPageHeader.add(resultList.get(pageSize));
                 }
                 int i = pageSize > resultList.size() ? resultList.size() : pageSize;
@@ -270,6 +309,6 @@ public class PickerModelImpl extends PickerModel {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             PickerModelImpl.this.postResults(evt);
-        }       
+        }
     }
 }

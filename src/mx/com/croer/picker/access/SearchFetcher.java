@@ -22,7 +22,6 @@ import javax.swing.ImageIcon;
 import mx.com.croer.entities.catalogodigital.Marca;
 import mx.com.croer.entities.catalogodigital.Producto;
 import mx.com.croer.entities.proxy.Item;
-import mx.com.croer.picker.mvc.DataPicker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,10 +66,9 @@ public class SearchFetcher extends DataPicker {
         }
     }
     private String input;
-    private final int pageSize = 3;
 
-    private List<Entry<Candidate, List>> selectedOnes(String[] hints) {
-        List<Candidate> candidateList = searchCandidates(hints);
+    private List<Entry<Candidate, List>> selectedOnes(String[] hints, int pageNumber) {
+        List<Candidate> candidateList = searchCandidates(hints, pageNumber);
         List<Entry<Candidate, List>> selectedList = new ArrayList<>();
 
         next_candidate:                 //Assess each candidate bean
@@ -92,7 +90,7 @@ public class SearchFetcher extends DataPicker {
         return selectedList;
     }
 
-    private List<Candidate> searchCandidates(String[] hints) {
+    private List<Candidate> searchCandidates(String[] hints, int pageNumber) {
         //Sustituye <where> & <numOfWords>
         String where = "";
         String like = "where s.numegrama like '%<numegrama>%'";
@@ -106,7 +104,9 @@ public class SearchFetcher extends DataPicker {
         String query = CandidateSql.
                 replaceAll("<entity>", getType().getSimpleName()).
                 replaceAll("<where>", where).
-                replaceAll("<numOfWords>", hints.length + "");
+                replaceAll("<numOfWords>", hints.length + "").
+                replaceAll("<offset>", createPageSize() * --pageNumber + "").
+                replaceAll("<rows>", createPageSize() + 1 + "");
 
         System.out.println("BEG------------------------" + query);
 
@@ -238,21 +238,26 @@ public class SearchFetcher extends DataPicker {
         //Prepara, Valida y Divide la entrada
         String[] hints = StringUtils.split(input);
 
-        System.out.println("GodinezA " + hints);
         //Select the candidates
-        List<Entry<Candidate, List>> selectedList = selectedOnes(hints);
+        List<Entry<Candidate, List>> selectedList = selectedOnes(hints, pageNumber);
 
-        System.out.println("GodinezB");
         //Create the items
         List<Item> assembleItems = assembleItems(selectedList);
 
-        System.out.println("GodinezC");
         int indexOf = assembleItems.indexOf(pageHeader);
 
         System.out.println("Fetch with " + pageHeader + " * " + pageNumber + "###" + indexOf);
+        
+        try {
+            System.out.println("ThreadRRR "  + Thread.currentThread());
+            Thread.sleep(2000);
+            System.out.println("BoteroGordo " + Thread.interrupted());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SearchFetcher.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         if (indexOf >= 0) {
-            int i = indexOf + pageSize + 1;
+            int i = indexOf + createPageSize() + 1;
             if (i > assembleItems.size()) {
                 i = assembleItems.size();
             }
@@ -270,6 +275,11 @@ public class SearchFetcher extends DataPicker {
         if (item.getSource().getClass() == Producto.class) {
             //Baja al directorio y busca con la llave el icono
         }
+//        try {
+//            Thread.sleep(500);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(SearchFetcher.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         return image;
     }
 

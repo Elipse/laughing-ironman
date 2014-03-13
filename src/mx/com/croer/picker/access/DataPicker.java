@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.com.croer.picker.mvc;
+package mx.com.croer.picker.access;
 
 import mx.com.croer.entities.proxy.Item;
 import java.awt.Color;

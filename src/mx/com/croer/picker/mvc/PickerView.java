@@ -5,6 +5,7 @@
  */
 package mx.com.croer.picker.mvc;
 
+import mx.com.croer.picker.access.PickerModel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -237,6 +238,9 @@ public class PickerView implements BrowseListener, ListSelectionListener {
             case "forward":
                 panel.setEnableForward((boolean) value);
                 forward = (boolean) value;
+                break;
+            case "page":
+                panel.setPage(value);
                 break;
             default:
                 throw new AssertionError();

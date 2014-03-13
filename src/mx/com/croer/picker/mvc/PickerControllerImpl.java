@@ -5,6 +5,9 @@
  */
 package mx.com.croer.picker.mvc;
 
+import mx.com.croer.picker.access.PickerModelImpl;
+import mx.com.croer.picker.access.PickerModel;
+import mx.com.croer.picker.access.DataPicker;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.AbstractMap;
@@ -85,14 +88,15 @@ public final class PickerControllerImpl implements PickerController {
 
     @Override
     public void forward() {
-        if (model.forward()) {
+        int f = model.forward();
+        if (f != 0) {
             view.startProgess();
         }
     }
 
     @Override
     public void backward() {
-        if (model.backward()) {
+        if (model.backward() != 0) {
             view.startProgess();
         }
     }

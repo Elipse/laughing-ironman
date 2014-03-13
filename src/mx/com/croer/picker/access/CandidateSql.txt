@@ -12,4 +12,5 @@
                   ) as v1
              group by idBean
              having sum(frecuencia) >= <numOfWords>) 
-           order by prioridad desc, idBean asc ;
+           order by prioridad desc, idBean asc 
+           limit <offset>, <rows>;
