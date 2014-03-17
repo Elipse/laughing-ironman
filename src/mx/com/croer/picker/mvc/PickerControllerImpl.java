@@ -82,7 +82,8 @@ public final class PickerControllerImpl implements PickerController {
     @Override
     public void fetch(Object input) {
         model.fetch(input);
-        view.displayPopup(true);
+//        view.displayPopup(true);
+        System.out.println("viewByFetch " + view);
         view.startProgess();
     }
 
@@ -104,7 +105,7 @@ public final class PickerControllerImpl implements PickerController {
     @Override
     public void cancel() {
         model.cancel();
-        view.displayPopup(false);
+//        view.displayPopup(false);
         view.stopProgress();
     }
 

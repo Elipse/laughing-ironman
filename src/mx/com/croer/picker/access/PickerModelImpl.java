@@ -105,13 +105,14 @@ public class PickerModelImpl implements PickerModel {
     private void displayPage() {
 
         sync = new Object();  //Cambia el pulso sincronico
-
+        
         if (!iconWorker.isDone()) {  //TODO Revisar si es necesario para los demás
             iconWorker.cancel(false);  //Cancela búsqueda en proceso y se jecuta done()
         }
         iconWorker.removePropertyChangeListener(classListener);
 
-        beanWorker.cancel(false);  //Cancela búsqueda en proceso y se jecuta done()
+        //Con false brinca a done() pero el thread sigue, con true se interrumpe el thread
+        beanWorker.cancel(true);  //Cancela búsqueda en proceso y se jecuta done()
         beanWorker.removePropertyChangeListener(classListener);
 
         Object pageHeader = listPageHeader.get(pageNumber - 1);  //TODO WOW Da por echo q la búsqueda previa terminó
@@ -223,6 +224,7 @@ public class PickerModelImpl implements PickerModel {
         protected void done() {
 //            if (isCancelled() || this.sync != PickerModelImpl.this.sync) { //Si está activa otra lista: termina
             if (this.sync != PickerModelImpl.this.sync) { //Si está activa otra lista: termina
+                System.out.println("ASYNCOXXX");
                 return;
             }
 

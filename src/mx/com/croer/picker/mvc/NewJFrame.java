@@ -5,6 +5,7 @@
  */
 package mx.com.croer.picker.mvc;
 
+import java.awt.Component;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ public class NewJFrame extends javax.swing.JFrame {
     public NewJFrame() throws IOException {
         initComponents();
 
-        PickerControllerImpl pickerControllerImpl = new PickerControllerImpl(jTextPane1, Producto.class);
+        Pavon.bind(jTextPane1, Producto.class, null);
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
         EntityManagerFactory bean = context.getBean("emf", EntityManagerFactory.class);
         TypedQuery<Marca> createNamedQuery = bean.createEntityManager().createNamedQuery("Marca.findAll", Marca.class);
@@ -59,30 +60,13 @@ public class NewJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTextPane1.setName("Vegas"); // NOI18N
         jScrollPane1.setViewportView(jTextPane1);
 
-        jTextField1.setText("jTextField1");
+        getContentPane().add(jScrollPane1, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
-                .addContainerGap(280, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(227, Short.MAX_VALUE))
-        );
+        jTextField1.setText("jTextField1");
+        getContentPane().add(jTextField1, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

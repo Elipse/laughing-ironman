@@ -253,7 +253,8 @@ public class SearchFetcher extends DataPicker {
             Thread.sleep(2000);
             System.out.println("BoteroGordo " + Thread.interrupted());
         } catch (InterruptedException ex) {
-            Logger.getLogger(SearchFetcher.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("InterruptedExceptionInterruptedExceptionInterruptedException");
+//            Logger.getLogger(SearchFetcher.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         if (indexOf >= 0) {
@@ -312,18 +313,18 @@ public class SearchFetcher extends DataPicker {
         SearchFetcher searchFetcher = (SearchFetcher) context.getBean("searchFetcher");
         searchFetcher.setType(Marca.class);
 
-        List<Item> page2 = searchFetcher.createPage("72 ", 0);
+        List<Item> page2 = searchFetcher.createPage("72 ", 1);
         for (Item itemProxy : page2) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
 
         searchFetcher.setType(Producto.class);
-        List<Item> page = searchFetcher.createPage("2  ", 0);
+        List<Item> page = searchFetcher.createPage("2  ", 1);
         for (Item itemProxy : page) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }
 
-        List<Item> page3 = searchFetcher.createPage("62 8 ", 0);
+        List<Item> page3 = searchFetcher.createPage("62 8 ", 1);
         for (Item itemProxy : page3) {
             System.out.println(" Fuente " + itemProxy.getSource() + " Alineación " + itemProxy.getAlignment() + " Contexto " + itemProxy.getContext());
         }

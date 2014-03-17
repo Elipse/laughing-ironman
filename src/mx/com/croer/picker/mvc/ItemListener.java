@@ -6,16 +6,10 @@
 
 package mx.com.croer.picker.mvc;
 
-import javax.swing.text.JTextComponent;
-
 /**
  *
  * @author elialva
  */
-class PavonImp {
-
-   public void bindImp(JTextComponent j) {
-       
-   }
+class ItemListener {
     
 }

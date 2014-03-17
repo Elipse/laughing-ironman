@@ -7,8 +7,15 @@ package mx.com.croer.picker.mvc;
 
 import mx.com.croer.picker.access.PickerModel;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusAdapter;
 import mx.com.croer.entities.proxy.Item;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -17,9 +24,12 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -64,12 +74,29 @@ public class PickerView implements BrowseListener, ListSelectionListener {
 
     private boolean backward;
     private boolean forward;
+    private final PickerViewDialog njd;
+    private JTextComponent sourceComponent;
 
-    public PickerView(JTextComponent textComponent, PickerController controller, PickerModel model, final List<BeanColumn> crisscross) {
-        this.textComponent = textComponent;
+    public PickerView(JTextComponent sourceComponent, PickerController controller, PickerModel model, final List<BeanColumn> crisscross) {
+        this.panel = createPanel();
+        this.textComponent = panel.getJTextPane();
         this.controller = controller;
         this.model = model;
         this.crisscross = crisscross;
+
+        textComponent.setFocusTraversalKeys(KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, null);
+        textComponent.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                    System.out.println("Se consume " + e);
+                    e.consume();
+                }
+            }
+        });
+
+        this.sourceComponent = sourceComponent;
+        sourceComponent.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.singleton(KeyStroke.getKeyStroke("TAB")));
 
         //Listen to the model's changes
         this.model.addBrowseListener(PickerView.this);
@@ -80,12 +107,21 @@ public class PickerView implements BrowseListener, ListSelectionListener {
         this.textComponent.addFocusListener(ml);
         this.textComponent.getDocument().addDocumentListener(ml);
 
+        MyFocusListener mfl = new MyFocusListener();
+        sourceComponent.addFocusListener(mfl);
+        sourceComponent.addKeyListener(mfl);
+        this.textComponent.addKeyListener(mfl);
+        njd = new PickerViewDialog(null, true, null, null);
+        njd.add(this.panel);
+        njd.setSize(300, 300);
+        njd.pack();
+
         //Creates the floating panel
-        this.panel = createPanel();
+//        this.panel = createPanel();
         this.panel.addPropertyChangeListener(ml);
-        this.popup = new JPopupMenu();
-        this.popup.setFocusable(false);
-        this.popup.add(this.panel);
+//        this.popup = new JPopupMenu();
+//        this.popup.setFocusable(false);
+//        this.popup.add(this.panel);
 
         configTable();
     }
@@ -96,90 +132,71 @@ public class PickerView implements BrowseListener, ListSelectionListener {
     }
 
     private void keyPressedInTextComponent(KeyEvent e) {
-        if (done) {
-            if (popup.isShowing()) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_ENTER: {
-                        selectRow(0);
-                        displayPopup(false);
-                        controller.makeSelection(list);
-                        for (Object object : list) {
-                            Item item = (Item) object;
-                            item.setSelection(null);
-                        }
-                        e.consume();
-                        break;
-                    }
-                    case KeyEvent.VK_ESCAPE: {
-                        displayPopup(false);
-                        break;
-                    }
-                    case KeyEvent.VK_PAGE_UP: {
-                        controller.backward();
-                        e.consume();
-                        break;
-                    }
-                    case KeyEvent.VK_PAGE_DOWN: {
-                        controller.forward();
-                        e.consume();
-                        break;
-                    }
-                    case KeyEvent.VK_UP: {
-                        changeListSelectedIndex(-1);
-                        break;
-                    }
+//        if (popup.isShowing()) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_ENTER: {
+                selectRow(0);
+//                    displayPopup(false);
+                controller.makeSelection(list);
+                for (Object object : list) {
+                    Item item = (Item) object;
+                    item.setSelection(null);
+                }
+                e.consume();
+                break;
+            }
+            case KeyEvent.VK_ESCAPE: {
+//                    displayPopup(false);
+                break;
+            }
+            case KeyEvent.VK_PAGE_UP: {
+                controller.backward();
+                e.consume();
+                break;
+            }
+            case KeyEvent.VK_PAGE_DOWN: {
+                controller.forward();
+                e.consume();
+                break;
+            }
+            case KeyEvent.VK_UP: {
+                changeListSelectedIndex(-1);
+                break;
+            }
 
-                    case KeyEvent.VK_DOWN: {
-                        changeListSelectedIndex(+1);
-                        break;
-                    }
-                    case KeyEvent.VK_CONTROL:
-                        String keys = KeyEvent.getModifiersExText(e.getModifiersEx());
-                        switch (keys) {
-                            case "Ctrl":
-                                selectRow(+1);
-                                break;
-                            case "Ctrl+Shift":
-                                selectRow(-1);
-                                break;
-                        }
-                        break;
-                    default:
-                }
-            } else {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_ENTER:
-                        e.consume();
-                    case KeyEvent.VK_PAGE_UP:
-                    case KeyEvent.VK_PAGE_DOWN:
-                    case KeyEvent.VK_UP:
-                    case KeyEvent.VK_DOWN:
-                        displayPopup(true);
-                        break;
-                }
+            case KeyEvent.VK_DOWN: {
+                changeListSelectedIndex(+1);
+                break;
             }
-        } else {
-            if (popup.isShowing()) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_ESCAPE:
-                        this.controller.cancel();
+            case KeyEvent.VK_CONTROL:
+                String keys = KeyEvent.getModifiersExText(e.getModifiersEx());
+                switch (keys) {
+                    case "Ctrl":
+                        selectRow(+1);
+                        break;
+                    case "Ctrl+Shift":
+                        selectRow(-1);
                         break;
                 }
-            } else {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_ENTER:
-                    case KeyEvent.VK_PAGE_UP:
-                    case KeyEvent.VK_PAGE_DOWN:
-                    case KeyEvent.VK_UP:
-                    case KeyEvent.VK_DOWN:
-                        this.controller.fetch(this.textComponent.getText()); //si se canceló empieza desde el inicio
-                        break;
-                }
-            }
+                break;
+            default:
         }
+//        } else {
+//            switch (e.getKeyCode()) {
+//                case KeyEvent.VK_ENTER:
+//                    e.consume();
+//                case KeyEvent.VK_PAGE_UP:
+//                case KeyEvent.VK_PAGE_DOWN:
+//                case KeyEvent.VK_UP:
+//                case KeyEvent.VK_DOWN:
+//                    displayPopup(true);
+//                    break;
+//            }
+//        }
     }
 
     private void documentChangeInTextComponent(DocumentEvent e) {
+        System.out.println("kokis " + this.textComponent.getText());
         this.controller.fetch(this.textComponent.getText());
         colorStyledDocument((DefaultStyledDocument) e.getDocument());
     }
@@ -398,6 +415,79 @@ public class PickerView implements BrowseListener, ListSelectionListener {
         Rectangle rect = table.getCellRect(table.getSelectedRow(), table.getSelectedColumn(), true);
         table.scrollRectToVisible(rect);
 
+    }
+
+    private class MyFocusListener extends KeyAdapter implements FocusListener, PropertyChangeListener {
+
+        private String propertyname = "";
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getSource() == PickerView.this.sourceComponent) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_CONTROL:
+//                        njd.setLocationRelativeTo(PickerView.this.sourceComponent);
+                        Point p = sourceComponent.getLocationOnScreen();
+                        njd.setLocation(p.x - 2, p.y + sourceComponent.getHeight() + 2);
+//                        njd.setBounds(1, 1, 400, 400);
+                        njd.setVisible(true);
+                        break;
+                    default:
+                }
+            }
+            if (e.getSource() == PickerView.this.textComponent) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_TAB:
+                        propertyname = "Tab";
+                        njd.setVisible(false);
+                        break;
+                    case KeyEvent.VK_CONTROL:
+                        propertyname = "Control";
+                        njd.setVisible(false);
+                        break;
+                    default:
+                }
+            }
+
+        }
+
+        @Override
+        public void focusGained(FocusEvent e) {
+            if (e.getSource() == PickerView.this.sourceComponent) {
+                System.out.println("focusGained by " + propertyname);
+                switch (propertyname) {
+                    case "Tab":
+                        KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent();
+                    case "Control":
+                        propertyname = "";
+                        break;
+                    default:
+//                        njd.setLocationRelativeTo(PickerView.this.sourceComponent);
+                        Point p = sourceComponent.getLocationOnScreen();
+                        njd.setLocation(p.x - 2, p.y + sourceComponent.getHeight() + 2);
+//                        njd.setBounds(10, 1, 400, 400);
+                        njd.setVisible(true);
+                        break;
+                }
+
+//                if (e.getOppositeComponent() != null) {
+//                    propertyname = "";
+//                    njd.setLocationRelativeTo(PickerView.this.textComponent);
+//                    njd.setBounds(10, 50, 100, 60);
+//                    njd.setVisible(true);
+//                }
+            }
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            this.propertyname = evt.getPropertyName();
+        }
     }
 
     private class MultipleListener extends KeyAdapter implements DocumentListener, FocusListener, PropertyChangeListener {
