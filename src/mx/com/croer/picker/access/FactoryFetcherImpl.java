@@ -25,7 +25,8 @@ public class FactoryFetcherImpl implements FactoryFetcher {
     public Object createBusinessObject(Object key, Class type) {
         if (type == Producto.class) {
             TypedQuery<Producto> query = em.createNamedQuery("Producto.findByIdProducto", Producto.class);
-            query.setParameter("idProducto", key);
+            System.out.println("idProducto--" +  new Integer(key.toString()));
+            query.setParameter("idProducto", new Integer(key.toString()));
             return query.getSingleResult();
 //            return new ArrayList();
         }

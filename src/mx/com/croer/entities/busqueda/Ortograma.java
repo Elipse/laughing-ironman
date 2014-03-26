@@ -25,42 +25,42 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author elialva
  */
 @Entity
-@Table(name = "_simigrama")
+@Table(name = "_ortograma")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Simigrama.findAll", query = "SELECT s FROM Simigrama s"),
-    @NamedQuery(name = "Simigrama.findBySimigrama", query = "SELECT s FROM Simigrama s WHERE s.simigrama = :simigrama"),
-    @NamedQuery(name = "Simigrama.findByNumegrama", query = "SELECT s FROM Simigrama s WHERE s.numegrama = :numegrama")})
-public class Simigrama implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "simigrama1")
-    private Collection<Alineacion> alineacionCollection;
+    @NamedQuery(name = "Ortograma.findAll", query = "SELECT o FROM Ortograma o"),
+    @NamedQuery(name = "Ortograma.findByOrtograma", query = "SELECT o FROM Ortograma o WHERE o.ortograma = :ortograma"),
+    @NamedQuery(name = "Ortograma.findByNumegrama", query = "SELECT o FROM Ortograma o WHERE o.numegrama = :numegrama")})
+public class Ortograma implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "simigrama")
-    private String simigrama;
+    @Column(name = "ortograma")
+    private String ortograma;
     @Basic(optional = false)
     @Column(name = "numegrama")
     private String numegrama;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ortograma1")
+    private Collection<Alineacion> alineacionCollection;
 
-    public Simigrama() {
+    public Ortograma() {
     }
 
-    public Simigrama(String simigrama) {
-        this.simigrama = simigrama;
+    public Ortograma(String ortograma) {
+        this.ortograma = ortograma;
     }
 
-    public Simigrama(String simigrama, String numegrama) {
-        this.simigrama = simigrama;
+    public Ortograma(String ortograma, String numegrama) {
+        this.ortograma = ortograma;
         this.numegrama = numegrama;
     }
 
-    public String getSimigrama() {
-        return simigrama;
+    public String getOrtograma() {
+        return ortograma;
     }
 
-    public void setSimigrama(String simigrama) {
-        this.simigrama = simigrama;
+    public void setOrtograma(String ortograma) {
+        this.ortograma = ortograma;
     }
 
     public String getNumegrama() {
@@ -71,31 +71,6 @@ public class Simigrama implements Serializable {
         this.numegrama = numegrama;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (simigrama != null ? simigrama.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Simigrama)) {
-            return false;
-        }
-        Simigrama other = (Simigrama) object;
-        if ((this.simigrama == null && other.simigrama != null) || (this.simigrama != null && !this.simigrama.equals(other.simigrama))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "mx.com.croer.busqueda.entities.Simigrama[ simigrama=" + simigrama + " ]";
-    }
-
     @XmlTransient
     public Collection<Alineacion> getAlineacionCollection() {
         return alineacionCollection;
@@ -103,6 +78,31 @@ public class Simigrama implements Serializable {
 
     public void setAlineacionCollection(Collection<Alineacion> alineacionCollection) {
         this.alineacionCollection = alineacionCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (ortograma != null ? ortograma.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Ortograma)) {
+            return false;
+        }
+        Ortograma other = (Ortograma) object;
+        if ((this.ortograma == null && other.ortograma != null) || (this.ortograma != null && !this.ortograma.equals(other.ortograma))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "mx.com.croer.entities.busqueda.Ortograma[ ortograma=" + ortograma + " ]";
     }
     
 }
