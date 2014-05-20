@@ -32,8 +32,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Simigrama.findBySimigrama", query = "SELECT s FROM Simigrama s WHERE s.simigrama = :simigrama"),
     @NamedQuery(name = "Simigrama.findByNumegrama", query = "SELECT s FROM Simigrama s WHERE s.numegrama = :numegrama")})
 public class Simigrama implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "simigrama1")
-    private Collection<Alineacion> alineacionCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -42,6 +40,8 @@ public class Simigrama implements Serializable {
     @Basic(optional = false)
     @Column(name = "numegrama")
     private String numegrama;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "simigrama1")
+    private Collection<Alineacion> alineacionCollection;
 
     public Simigrama() {
     }
@@ -71,6 +71,15 @@ public class Simigrama implements Serializable {
         this.numegrama = numegrama;
     }
 
+    @XmlTransient
+    public Collection<Alineacion> getAlineacionCollection() {
+        return alineacionCollection;
+    }
+
+    public void setAlineacionCollection(Collection<Alineacion> alineacionCollection) {
+        this.alineacionCollection = alineacionCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -93,16 +102,7 @@ public class Simigrama implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.com.croer.busqueda.entities.Simigrama[ simigrama=" + simigrama + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Alineacion> getAlineacionCollection() {
-        return alineacionCollection;
-    }
-
-    public void setAlineacionCollection(Collection<Alineacion> alineacionCollection) {
-        this.alineacionCollection = alineacionCollection;
+        return "mx.com.croer.entities.busqueda.Simigrama[ simigrama=" + simigrama + " ]";
     }
     
 }

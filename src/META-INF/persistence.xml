@@ -16,10 +16,9 @@
       -->
     </properties>
   </persistence-unit>
-  <persistence-unit name="JavaProject1PU3" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="PUBusqueda" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>mx.com.croer.picker.access.Chetos</class>
-    <class>mx.com.croer.entities.busqueda.Productobusq</class>
     <class>mx.com.croer.entities.busqueda.Simigrama</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/busqueda?zeroDateTimeBehavior=convertToNull"/>

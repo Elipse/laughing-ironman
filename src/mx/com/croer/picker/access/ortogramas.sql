@@ -4,4 +4,4 @@
                                    inner join Producto_Ortograma as o
                                  on         a.ortograma = o.ortograma
              where s.numegrama like '%6%'
-               and idBean = 9;
+               and idItem = 9;

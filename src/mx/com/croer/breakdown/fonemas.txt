@@ -1,17 +1,20 @@
-ba      ba      12
-ba      va      12
-be      be      12
-be      ve      12
-ce	se      12
-ce	ze      12
-ci	si      12
-ci	zi      12
-si	ci      12
-si	zi      12
-que     qe      23      
-que     ke      23              que:_ke
-ke      que     1_2             k_e:que
-qe      que     1_2    
-ge      gue     1_2             g_e:gue
-ge      je      12
-gue     ge      23
+ba      ba      ba:ba
+ba      va      ba:va
+be      be      be:be
+be      ve      be:ve
+ce	se      ce:se
+ce	ze      ce:ze
+ci	si      ci:si
+ci	zi      ci:zi
+si	ci      si:ci
+si	zi      si_zi
+que     que     que:q_e
+que     qe      que:_qe      
+que     ke      que:_ke
+ke      que     k_e:que
+qe      que     q_e:que    
+ge      gue     g_e:gue
+ge      je      ge:je
+gue     ge      gue:_ge
+lla     ya      lla:_ya
+ye      lle     _ye:lle

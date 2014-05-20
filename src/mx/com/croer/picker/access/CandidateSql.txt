@@ -1,16 +1,16 @@
-           select idBean, contexto
-	   from <entity>Busq
-	   where idBean in (
-	    select idBean
+           select i.type, i.idItem, i.contexto
+	   from Itembusq as i inner join (
+	    select idItem, type
                   from (
-                  select distinct a.ortograma, o.idBean,  frecuencia
+                  select distinct a.ortograma, o.type, o.idItem, frecuencia
                   from _simigrama as s inner join _alineacion as a 
                                                     on a.simigrama = s.simigrama
-                                                    inner join <entity>_Ortograma as o
-                                                    on o.ortograma = a.ortograma
+                                                    inner join Item_Ortograma as o
+                                                    on o.ortograma = a.ortograma and o.type = <type>
                   <where>
                   ) as v1
-             group by idBean
-             having sum(frecuencia) >= <numOfWords>) 
-           order by prioridad desc, idBean asc 
+             group by type, idItem 
+             having sum(frecuencia) >= <numOfWords>) as v2 
+                              on i.type = v2.type and i.idItem = v2.idItem  
+           order by prioridad desc, idItem asc 
            limit <offset>, <rows>;

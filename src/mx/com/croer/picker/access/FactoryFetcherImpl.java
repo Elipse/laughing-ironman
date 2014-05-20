@@ -32,7 +32,8 @@ public class FactoryFetcherImpl implements FactoryFetcher {
         }
         if (type == Marca.class) {
             TypedQuery<Marca> query = em.createNamedQuery("Marca.findByIdMarca", Marca.class);
-            query.setParameter("idMarca", key);
+            System.out.println("keytoy " + key);
+            query.setParameter("idMarca", new Integer((String) key));
             return query.getSingleResult();
         }
         return null;

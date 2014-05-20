@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;  
 
 /**
  *
@@ -67,15 +67,17 @@ public class NewJFrame extends javax.swing.JFrame {
                 for (Entry<String, String> entry : list) {
                     System.out.println("ACambiar " + entry.getValue() + " list " + list);
                     char[] charA = entry.getValue().toCharArray();
-                    String seqMod = "";
-                    for (int j = 0; j < charA.length; j++) {
-                        if (charA[j] == '_') {
-                            seqMod = seqMod + charA[j];
-                        } else {
-                            int a = new Integer(charA[j] + "") - 1;
-                            seqMod = seqMod + sequence.substring(a, a + 1);
-                        }
-                    }
+                      String seqMod = offset(sequence, entry.getValue());
+//                    String seqMod = "";
+//                    for (int j = 0; j < charA.length; j++) {
+//                        if (charA[j] == '_') {
+//                            seqMod = seqMod + charA[j];
+//                        } else {
+//                            int a = new Integer(charA[j] + "") - 1;
+//                            seqMod = seqMod + sequence.substring(a, a + 1);
+//                        }
+//                    }
+                    
                     tmpList.add(new SimpleEntry(entry.getKey(), seqMod));
                 }
             }
@@ -266,7 +268,8 @@ public class NewJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private static String offset(String offset) {
+    private static String offset(String count, String offset) {
+        System.out.println("count " + count + " :f: " + offset);
         String[] split = StringUtils.split(offset, ":");
         char[] charA = split[0].toCharArray();
         char[] charB = split[1].toCharArray();
@@ -276,22 +279,21 @@ public class NewJFrame extends javax.swing.JFrame {
             if (charA[i] != '_') {
                 j++;
             }
-            
+
             if (charB[i] == '_') {
                 continue;
             }
-            
+
             if (charA[i] == '_') {
                 tmp = tmp + '_';
             } else {
 //                tmp = tmp + (char)j;
-                tmp = tmp + j;
+                tmp = tmp + count.charAt(j - 1);   //Con j recupera la sequence asignada a este hanger
             }
-        }        
+        }
         return tmp;
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */
@@ -326,7 +328,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
         //--------------------------------------------------------
-        TreeMap<String, Integer> breakDownText = breakDownText("artiqueso artikeso");
+        TreeMap<String, Integer> breakDownText = breakDownText("artiqueso artikeso llano botiyegua");
         Map map = new TreeMap();
         for (Map.Entry<String, Integer> entry : breakDownText.entrySet()) {
             String orthogram = entry.getKey();
@@ -342,10 +344,10 @@ public class NewJFrame extends javax.swing.JFrame {
             System.out.println("wordsX " + wordsX);
 
             map.put(orthogram, wordsX);
-            
-            System.out.println("offset " + offset("que:_ke"));
-            System.out.println("offset " + offset("k_e:que"));
-            System.out.println("offset " + offset("que:k_e"));
+
+            System.out.println("offset " + offset("789", "que:_ke"));
+            System.out.println("offset " + offset("45", "k_e:que"));
+            System.out.println("offset " + offset("789", "que:k_e"));
         }
 
 //        getXHintList(map);            genera una lista de XHint ortograma * simigramas (calcula numegramas, alineacion)

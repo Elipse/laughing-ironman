@@ -20,29 +20,58 @@ import javax.persistence.SqlResultSetMapping;
 //@SqlResultSetMapping(name = "CandidateResult",
 //        entities = {
 //            @EntityResult(entityClass = mx.com.croer.picker.access.Candidate.class, fields = {
-//                @FieldResult(name = "idBean", column = "idBean"),
+//                @FieldResult(name = "idItem", column = "idItem"),
 //                @FieldResult(name = "context", column = "contexto")})}
 //)
 public class Candidate implements Serializable {
 
     private String context;
 //    @Id
-    private Object idBean;
+    private String type;
+    private String idItem;
 
-    public void setIdBean(Object idBean) {
-        this.idBean = idBean;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
-    }
-
+    /**
+     * @return the context
+     */
     public String getContext() {
         return context;
     }
 
-    public Object getIdBean() {
-        return idBean;
+    /**
+     * @param context the context to set
+     */
+    public void setContext(String context) {
+        this.context = context;
     }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * @return the idItem
+     */
+    public String getIdItem() {
+        return idItem;
+    }
+
+    /**
+     * @param idItem the idItem to set
+     */
+    public void setIdItem(String idItem) {
+        this.idItem = idItem;
+    }
+
+    
 
 }

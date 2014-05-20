@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ortograma.findByOrtograma", query = "SELECT o FROM Ortograma o WHERE o.ortograma = :ortograma"),
     @NamedQuery(name = "Ortograma.findByNumegrama", query = "SELECT o FROM Ortograma o WHERE o.numegrama = :numegrama")})
 public class Ortograma implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ortograma1")
+    private Collection<ItemOrtograma> itemOrtogramaCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -103,6 +105,15 @@ public class Ortograma implements Serializable {
     @Override
     public String toString() {
         return "mx.com.croer.entities.busqueda.Ortograma[ ortograma=" + ortograma + " ]";
+    }
+
+    @XmlTransient
+    public Collection<ItemOrtograma> getItemOrtogramaCollection() {
+        return itemOrtogramaCollection;
+    }
+
+    public void setItemOrtogramaCollection(Collection<ItemOrtograma> itemOrtogramaCollection) {
+        this.itemOrtogramaCollection = itemOrtogramaCollection;
     }
     
 }

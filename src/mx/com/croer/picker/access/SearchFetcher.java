@@ -34,7 +34,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class SearchFetcher extends DataPicker {
 
-    @PersistenceContext(unitName = "JavaProject1PU3")
+    @PersistenceContext(unitName = "PUBusqueda")
     private EntityManager em;
 
     @Autowired
@@ -78,13 +78,15 @@ public class SearchFetcher extends DataPicker {
 //            System.out.println(">>>Candidate " + candidate.getContext());
             for (String hint : hints) { //All of hints must be discovered inside the candidate bean's context
 //                System.out.println(">>> >Busca " + hint);
-                List<XHint> xHintList = extendHints(hint, candidate.getIdBean()); //¿Deberia bastar xHintList.isEmpty para next_candidate?
+                List<XHint> xHintList = extendHints(hint, candidate.getIdItem()); //¿Deberia bastar xHintList.isEmpty para next_candidate?
+                System.out.println("xHintList " + xHintList);
                 Entry<Integer, Integer> section = calculateSection(context, xHintList);
                 if (section == null) {
                     continue next_candidate;
                 }
                 sections.add(section);
             }
+            System.out.println("sections  " + sections);
             selectedList.add(new SimpleEntry(candidate, sections));
         }
         return selectedList;
@@ -93,16 +95,21 @@ public class SearchFetcher extends DataPicker {
     private List<Candidate> searchCandidates(String[] hints, int pageNumber) {
         //Sustituye <where> & <numOfWords>
         String where = "";
-        String like = "where s.numegrama like '%<numegrama>%'";
+        String like = "where (s.numegrama like '%<numegrama>%'";
         for (String hint : hints) {
             where += like.replaceAll("<numegrama>", hint);
             like = " or s.numegrama like '%<numegrama>%'";
         }
+        
+        if (!where.trim().isEmpty()) {
+            where = where + ")";
+        }
 
-        System.out.println("getType: " + getType().getSimpleName());
+        System.out.println("getType: " + where);
 
         String query = CandidateSql.
                 replaceAll("<entity>", getType().getSimpleName()).
+                replaceAll("<type>", "'" + getType().getSimpleName() + "'").
                 replaceAll("<where>", where).
                 replaceAll("<numOfWords>", hints.length + "").
                 replaceAll("<offset>", createPageSize() * --pageNumber + "").
@@ -118,9 +125,11 @@ public class SearchFetcher extends DataPicker {
             for (int i = 0; i < row.length; i++) {
                 switch (i) {
                     case 0:
-                        candidate.setIdBean(row[0]);
+                        candidate.setType((String) row[0]);
                     case 1:
-                        candidate.setContext((String) row[1]);
+                        candidate.setIdItem((String) row[1]);
+                    case 2:
+                        candidate.setContext((String) row[2]);
                 }
             }
             list.add(candidate);
@@ -128,7 +137,7 @@ public class SearchFetcher extends DataPicker {
 //        Query q = em.createNativeQuery(query, "CandidateResult"); //Manejar paginación aqui
 //        List<Candidate> list = q.getResultList();
         for (Candidate candidate : list) {
-//            System.out.println("CanditateMOOF " + candidate + " - " + candidate.getContext() + candidate.getIdBean());
+            System.out.println("CanditateMOOF " + candidate + " - " + candidate.getContext() + candidate.getIdItem());
         }
         System.out.println("END------------------------");
 
@@ -150,8 +159,8 @@ public class SearchFetcher extends DataPicker {
     private List<XHint> extendHints(String hint, Object key) {
 
         String tmpQuery = XHintSql.
-                replaceAll("<entity>", getType().getSimpleName()).
-                replaceAll("<idBean>", key.toString());
+                replaceAll("<type>", "'" + getType().getSimpleName() + "'").
+                replaceAll("<idItem>", key.toString());
 
         List<XHint> list = new ArrayList();
         List<Map<String, Object>> queryForList = jdbcTemplate.queryForList(tmpQuery.replaceAll("<hint>", hint));
@@ -202,9 +211,22 @@ public class SearchFetcher extends DataPicker {
 
         contexto.replace(leftPos, leftPos + orthogram.length(), StringUtils.repeat(" ", orthogram.length()));
 
+        String tmp = alineacion.substring(offset, offset + hint.length());
+        tmp = tmp.replaceAll("_", "");
+        if (tmp.isEmpty()) {
+            return null;
+        }
+
+        char t = 0x00;
+        if (offset - 1 >= 0) {
+            t = alineacion.charAt(offset - 1);
+        }
+
         char[] c = alineacion.substring(offset, offset + hint.length()).toCharArray();
-        int a = leftPos + c[0];
-        int b = leftPos + c[c.length - 1];
+
+//        int a = leftPos + c[0] - 1;
+        int a = leftPos + t;
+        int b = leftPos + c[c.length - 1] - 1;
 
 //        new SimpleEntry(orthopos + inklpos, end - begin + 1);
         return new SimpleEntry(a, b - a + 1);
@@ -215,7 +237,7 @@ public class SearchFetcher extends DataPicker {
         for (Entry<Candidate, List> entry : selectedList) {
             Candidate candidate = entry.getKey();
             List alignment = entry.getValue();
-            Object businessObj = ff.createBusinessObject(candidate.getIdBean(), getType());
+            Object businessObj = ff.createBusinessObject(candidate.getIdItem(), getType());
             Item item = ff.createItem(businessObj);
             item.setContext(candidate.getContext());
             item.setAlignment(alignment);
@@ -247,9 +269,9 @@ public class SearchFetcher extends DataPicker {
         int indexOf = assembleItems.indexOf(pageHeader);
 
         System.out.println("Fetch with " + pageHeader + " * " + pageNumber + "###" + indexOf);
-        
+
         try {
-            System.out.println("ThreadRRR "  + Thread.currentThread());
+            System.out.println("ThreadRRR " + Thread.currentThread());
             Thread.sleep(2000);
             System.out.println("BoteroGordo " + Thread.interrupted());
         } catch (InterruptedException ex) {
@@ -262,8 +284,10 @@ public class SearchFetcher extends DataPicker {
             if (i > assembleItems.size()) {
                 i = assembleItems.size();
             }
+            System.out.println("REXT " + assembleItems.subList(indexOf, i));
             return assembleItems.subList(indexOf, i);
         } else {
+            System.out.println("REXT " + assembleItems);
             return assembleItems;
         }
 
