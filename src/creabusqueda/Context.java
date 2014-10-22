@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mx.com.croer.entities.busqueda.Alineacion;
+import mx.com.croer.entities.busqueda.Diccionario;
 import mx.com.croer.entities.busqueda.ItemOrtograma;
 import mx.com.croer.entities.busqueda.Itembusq;
 import mx.com.croer.entities.busqueda.Ortograma;
@@ -100,14 +101,24 @@ public class Context {
         }
         return context;
     }
+    
+    private static Diccionario createDiccionario(Class<? extends Object> clas) {
+       String dic = clas.getName();
+       Diccionario diccionario = new Diccionario(clas.getName());
+       
+       return null;
+    }
 
     public static void saveContext(Object bean, List<String> idProps, List<String> contextProps) {
         String key = createKey(bean, idProps);
         String context = createContext(bean, contextProps);
         Itembusq itembusq = createItembusq(bean.getClass().getName(), key, context);
+        Diccionario diccionario = createDiccionario(bean.getClass());
         List<Ortograma> ortogramaList = createOrtogramaList(itembusq);
         List<Simigrama> simigramaList = createSimigramaList(ortogramaList);
         List<Alineacion> alineacionList = createAlineacionList(ortogramaList, simigramaList);
         List<ItemOrtograma> itemOrtogramaList = createItemOrtogramaList(itembusq, ortogramaList);
     }
+
+    
 }

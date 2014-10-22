@@ -18,3 +18,4 @@ ge      je      ge:je
 gue     ge      gue:_ge
 lla     ya      lla:_ya
 ye      lle     _ye:lle
+ha      a        ha:_a

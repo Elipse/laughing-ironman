@@ -11,6 +11,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
 import javax.swing.SwingWorker;
 import javax.swing.event.EventListenerList;
@@ -242,7 +243,7 @@ public class PickerModelImpl implements PickerModel {
                 }
                 int i = pageSize > resultList.size() ? resultList.size() : pageSize;
                 resultList = resultList.subList(0, i);
-            } catch (Exception ex) {  //Cacha las excepciones de doInBackground
+            } catch (InterruptedException | ExecutionException ex) {  //Cacha las excepciones de doInBackground
                 System.out.println("beer" + this.getState().name());
                 System.out.println("exceptionBeanWorker " + ex);
 ////                Exceptions.printStackTrace(ex);

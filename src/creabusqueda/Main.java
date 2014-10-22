@@ -5,12 +5,7 @@
  */
 package creabusqueda;
 
-import creabusqueda.newpackage.ServiCua;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import mx.com.croer.entities.busqueda.Itembusq;
 import mx.com.croer.entities.busqueda.ItembusqPK;
-import mx.com.croer.entities.catalogodigital.Producto;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**

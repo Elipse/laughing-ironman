@@ -279,6 +279,7 @@ public class PickerView implements BrowseListener, ListSelectionListener {
 
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 String input = "";
                 try {

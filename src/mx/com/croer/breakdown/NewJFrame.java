@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.StringUtils;  
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -67,7 +67,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 for (Entry<String, String> entry : list) {
                     System.out.println("ACambiar " + entry.getValue() + " list " + list);
                     char[] charA = entry.getValue().toCharArray();
-                      String seqMod = offset(sequence, entry.getValue());
+                    String seqMod = offset(sequence, entry.getValue());
 //                    String seqMod = "";
 //                    for (int j = 0; j < charA.length; j++) {
 //                        if (charA[j] == '_') {
@@ -77,7 +77,7 @@ public class NewJFrame extends javax.swing.JFrame {
 //                            seqMod = seqMod + sequence.substring(a, a + 1);
 //                        }
 //                    }
-                    
+
                     tmpList.add(new SimpleEntry(entry.getKey(), seqMod));
                 }
             }
@@ -135,19 +135,17 @@ public class NewJFrame extends javax.swing.JFrame {
         initComponents();
     }
 
+    /**
+     * 
+     * @param text 
+     * @return A sorted map with word-frequency pairs
+     */
     private static TreeMap<String, Integer> breakDownText(String text) {
         String[] split = StringUtils.split(text);
-        Set<String> set = new LinkedHashSet();
         TreeMap<String, Integer> map = new TreeMap();
         for (String string : split) {
-
-            boolean add = set.add(string);
-
             int frecuency = map.containsKey(string) ? map.get(string) + 1 : 1;
             map.put(string, frecuency);
-
-            System.out.println("---" + string + ":" + add);
-            System.out.println("map " + map);
         }
         return map;
     }
@@ -328,7 +326,8 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
         //--------------------------------------------------------
-        TreeMap<String, Integer> breakDownText = breakDownText("artiqueso artikeso llano botiyegua");
+        TreeMap<String, Integer> breakDownText = breakDownText("artiqueso artikeso llano botiyegua llano");
+        System.out.println("breakDownText "  + breakDownText);
         Map map = new TreeMap();
         for (Map.Entry<String, Integer> entry : breakDownText.entrySet()) {
             String orthogram = entry.getKey();
